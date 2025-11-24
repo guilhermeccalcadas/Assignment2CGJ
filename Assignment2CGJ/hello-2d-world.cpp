@@ -70,9 +70,9 @@ typedef struct {
 } Vertex;
 
 const Vertex Vertices[] = {
-    {{0.25f, 0.25f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-    {{0.75f, 0.25f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-    {{0.50f, 0.75f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}};
+    {{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+    {{0.4f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+    {{0.0f, 0.4f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}};
 
 const GLubyte Indices[] = {0, 1, 2};
 
@@ -116,8 +116,31 @@ void MyApp::destroyBufferObjects() {
 ////////////////////////////////////////////////////////////////////////// SCENE
 
 const glm::mat4 I(1.0f);
-const glm::mat4 M =
-    glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -1.0f, 0.0f));
+//const glm::mat4 M =
+//    glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -1.0f, 0.0f));
+//vermelho
+const glm::mat4 M1 =
+    glm::translate(glm::mat4(1.0f), glm::vec3(-0.2f, -0.5f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(333.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//azul
+const glm::mat4 M2 =
+    glm::translate(glm::mat4(1.0f), glm::vec3(0.3f, -0.5f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(18.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//roxo
+const glm::mat4 M3 =
+    glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.5f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(198.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
+    glm::scale(glm::mat4(1.0f), glm::vec3(0.75f, 0.75f, 1.0f));
+//laranja
+const glm::mat4 M4 =
+    glm::translate(glm::mat4(1.0f), glm::vec3(0.3f, 0.5f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(63.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
+    glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
+//verde
+const glm::mat4 M5 =
+    glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(153.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
+    glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
 
 void MyApp::drawScene() {
   // Drawing directly in clip space
@@ -125,13 +148,29 @@ void MyApp::drawScene() {
   glBindVertexArray(VaoId);
   Shaders->bind();
 
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(I));
+  //glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(I));
+  //glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
+  //               reinterpret_cast<GLvoid *>(0));
+
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M1));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
                  reinterpret_cast<GLvoid *>(0));
 
-  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M2));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
-                 reinterpret_cast<GLvoid *>(0));
+      reinterpret_cast<GLvoid*>(0));
+
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M3));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
+      reinterpret_cast<GLvoid*>(0));
+
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M4));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
+      reinterpret_cast<GLvoid*>(0));
+
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M5));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
+      reinterpret_cast<GLvoid*>(0));
 
   Shaders->unbind();
   glBindVertexArray(0);
