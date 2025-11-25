@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "../mgl/mgl.hpp"
+#include "Triangle.h"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
@@ -75,6 +76,9 @@ const Vertex Vertices[] = {
     {{0.0f, 0.4f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}};
 
 const GLubyte Indices[] = {0, 1, 2};
+
+
+
 
 void MyApp::createBufferObjects() {
   glGenVertexArrays(1, &VaoId);
@@ -142,6 +146,20 @@ const glm::mat4 M5 =
     glm::rotate(glm::mat4(1.0f), glm::radians(153.0f), glm::vec3(0.0f, 0.0f, 1.0f)) *
     glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 1.0f));
 
+Triangle t1(glm::vec4(1, 0, 1, 1), 1.0f, 333.0f);
+Triangle t2(glm::vec4(0, 1, 1, 1), 1.0f, 18.0f);
+Triangle t3(glm::vec4(1, 0, 1, 1), 0.75f, 198.0f);
+Triangle t4(glm::vec4(0, 1, 0, 1), 0.5f, 63.0f);
+Triangle t5(glm::vec4(0, 1, 0, 1), 0.5f, 153.0f);
+glm::mat4 pos1 = glm::translate(glm::mat4(1.0f), glm::vec3(-0.2f, -0.5f, 0.0f));
+glm::mat4 pos2 = glm::translate(glm::mat4(1.0f), glm::vec3(0.3f, -0.5f, 0.0f));
+glm::mat4 pos3 = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.5f, 0.0f));
+glm::mat4 pos4 = glm::translate(glm::mat4(1.0f), glm::vec3(0.3f, 0.5f, 0.0f));
+glm::mat4 pos5 = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, 0.0f));
+
+
+
+
 void MyApp::drawScene() {
   // Drawing directly in clip space
 
@@ -151,7 +169,7 @@ void MyApp::drawScene() {
   //glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(I));
   //glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
   //               reinterpret_cast<GLvoid *>(0));
-
+  /*
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M1));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
                  reinterpret_cast<GLvoid *>(0));
@@ -171,6 +189,37 @@ void MyApp::drawScene() {
   glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M5));
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE,
       reinterpret_cast<GLvoid*>(0));
+      */
+
+// Triângulo 1 (vermelho)
+  glm::mat4 M = pos1 * t1.getTriangle();
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniform4fv(Shaders->Uniforms["Cor"].index, 1, glm::value_ptr(t1.color));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
+
+  // Triângulo 2 (azul)
+  M = pos2 * t2.getTriangle();
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniform4fv(Shaders->Uniforms["Cor"].index, 1, glm::value_ptr(t2.color));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
+
+  // Triângulo 3 (roxo)
+  M = pos3 * t3.getTriangle();
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniform4fv(Shaders->Uniforms["Cor"].index, 1, glm::value_ptr(t3.color));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
+
+  // Triângulo 4 (laranja)
+  M = pos4 * t4.getTriangle();
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniform4fv(Shaders->Uniforms["Cor"].index, 1, glm::value_ptr(t4.color));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
+
+  // Triângulo 5 (verde)
+  M = pos5 * t5.getTriangle();
+  glUniformMatrix4fv(MatrixId, 1, GL_FALSE, glm::value_ptr(M));
+  glUniform4fv(Shaders->Uniforms["Cor"].index, 1, glm::value_ptr(t5.color));
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
 
   Shaders->unbind();
   glBindVertexArray(0);

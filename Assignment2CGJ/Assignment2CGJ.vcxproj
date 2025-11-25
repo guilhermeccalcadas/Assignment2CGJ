@@ -131,6 +131,10 @@
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="Assignment2CGJ.cpp" />
     <ClCompile Include="hello-2d-world.cpp" />
+    <ClCompile Include="Triangle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
