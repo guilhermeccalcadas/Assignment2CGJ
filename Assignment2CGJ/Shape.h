@@ -34,8 +34,8 @@ public:
 
     ~Shape();
 
-    void draw(GLint matrixUniform, GLint colorUniform) const;
-    glm::mat4 getModelMatrix() const;
+    void draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal) const;
+    glm::mat4 getModelMatrix(glm::vec2 pos, float rot, float scal) const;
 
 private:
     void createBuffers();

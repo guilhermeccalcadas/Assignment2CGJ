@@ -69,18 +69,18 @@ void Shape::createBuffers()
     glBindVertexArray(0);
 }
 
-glm::mat4 Shape::getModelMatrix() const
+glm::mat4 Shape::getModelMatrix(glm::vec2 pos, float rot, float scal) const
 {
     glm::mat4 M(1.0f);
-    M = glm::translate(M, glm::vec3(position, 0));
-    M = glm::rotate(M, glm::radians(rotation), glm::vec3(0, 0, 1));
-    M = glm::scale(M, glm::vec3(scale, scale, 1.0f));
+    M = glm::translate(M, glm::vec3(pos, 0));
+    M = glm::rotate(M, glm::radians(rot), glm::vec3(0, 0, 1));
+    M = glm::scale(M, glm::vec3(scal, scal, 1.0f));
     return M;
 }
 
-void Shape::draw(GLint matrixUniform, GLint colorUniform) const
+void Shape::draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal) const
 {
-    glm::mat4 M = getModelMatrix();
+    glm::mat4 M = getModelMatrix(pos, rot, scal);
 
     glUniformMatrix4fv(matrixUniform, 1, GL_FALSE, glm::value_ptr(M));
     glUniform4fv(colorUniform, 1, glm::value_ptr(color));
