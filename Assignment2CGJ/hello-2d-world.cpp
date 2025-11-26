@@ -156,13 +156,19 @@ void MyApp::drawScene() {
   }*/
 
   shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), 0.0f, 1.0f);
-  shapes[0]->changeColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.4f, 0.4f), 45.0f, 1.0f);
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.2f, -0.5f), 333.0f, 1.0f);
+  shapes[0]->changeColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.3f, -0.5f), 18.0f, 1.0f);
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.5f, 0.8f), 198.0f, 0.707f);
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.3f, 0.5f), 63.0f, 0.5f);
+  shapes[0]->changeColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.5f, -0.7f), 153.0f, 0.5f);
 
-  shapes[1]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, 0.4f), 0.0f, 1.0f);
+  shapes[1]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, 0.3f), 333.0f, 0.5f);
 
-  shapes[2]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, -0.4f), 0.0f, 1.0f);
+  shapes[2]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, -0.2f), 333.0f, 0.5f);
 
   Shaders->unbind();
   //glBindVertexArray(0);
@@ -194,7 +200,7 @@ void MyApp::initCallback(GLFWwindow *win) {
       squareVerts,
       glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), // cor verde
       0.0f,  // rotação
-      1.0f   // escala
+      0.5f   // escala
   );
   //square->position = glm::vec2(0.2f, 0.2f);
   shapes.push_back(std::move(square));
@@ -212,7 +218,7 @@ void MyApp::initCallback(GLFWwindow *win) {
       losangVerts,
       glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // cor amarela
       0.0f,  // rotação
-      1.0f   // escala
+      0.5f   // escala
   );
   shapes.push_back(std::move(losang));
 }
