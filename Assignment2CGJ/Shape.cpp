@@ -69,6 +69,19 @@ void Shape::createBuffers()
     glBindVertexArray(0);
 }
 
+void Shape::changeColor(glm::vec4 newColor)
+{
+    for (auto& v : vertices) {
+        v.RGBA[0] = newColor.r;
+        v.RGBA[1] = newColor.g;
+        v.RGBA[2] = newColor.b;
+        v.RGBA[3] = newColor.a;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+}
+
 glm::mat4 Shape::getModelMatrix(glm::vec2 pos, float rot, float scal) const
 {
     glm::mat4 M(1.0f);
@@ -83,7 +96,7 @@ void Shape::draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float r
     glm::mat4 M = getModelMatrix(pos, rot, scal);
 
     glUniformMatrix4fv(matrixUniform, 1, GL_FALSE, glm::value_ptr(M));
-    glUniform4fv(colorUniform, 1, glm::value_ptr(color));
+    //glUniform4fv(colorUniform, 1, glm::value_ptr(color));
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, 0);

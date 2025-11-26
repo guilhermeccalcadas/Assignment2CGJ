@@ -155,7 +155,9 @@ void MyApp::drawScene() {
       s->draw(MatrixId, Shaders->Uniforms["Cor"].index);
   }*/
 
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
   shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), 0.0f, 1.0f);
+  shapes[0]->changeColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
   shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.4f, 0.4f), 45.0f, 1.0f);
 
   shapes[1]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, 0.4f), 0.0f, 1.0f);
@@ -208,7 +210,7 @@ void MyApp::initCallback(GLFWwindow *win) {
   };
   auto losang = std::make_unique<Shape>(
       losangVerts,
-      glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // cor amarelo
+      glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // cor amarela
       0.0f,  // rotação
       1.0f   // escala
   );
