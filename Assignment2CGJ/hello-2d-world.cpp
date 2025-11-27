@@ -154,9 +154,22 @@ void MyApp::drawScene() {
   for (auto& s : shapes) {
       s->draw(MatrixId, Shaders->Uniforms["Cor"].index);
   }*/
-
+  
   shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.2f, -0.5f), 333.0f, 1.0f);
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), 0.0f, 1.0f);
+  shapes[1]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.2f, 0.2f), 0.0f, 0.5f);
+  shapes[0]->changeColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.2f), 180.0f, 0.5f);
+  shapes[0]->changeColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.4f, 0.0f), 45.0f, 1.0f);
+  shapes[2]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), -180.0f, 0.5f);
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.6828f, 0.2828f), 90.0f, 0.5f);
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.2f, 0.6f), 225.0f, 0.707f);
+  /*
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), 333.0f, 1.0f);
   shapes[0]->changeColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
   shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.3f, -0.5f), 18.0f, 1.0f);
   shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
@@ -169,7 +182,12 @@ void MyApp::drawScene() {
   shapes[1]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, 0.3f), 333.0f, 0.5f);
 
   shapes[2]->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.8f, -0.2f), 333.0f, 0.5f);
-
+  
+  shapes[0]->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, { 0.0f,0.0f }, 0.0f, 1.0f);        // triângulo 1
+  shapes[0]->changeColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  shapes[0]->draw(MatrixId, Shaders->Uniforms["Cor"].index, { 0.4f,0.0f }, 90.0f, 1.0f);       // triângulo 2 encostado
+  */
   Shaders->unbind();
   //glBindVertexArray(0);
 }
