@@ -6,39 +6,37 @@
 
 
 
-class Shape
-{
+class Shape {
+
 typedef struct {
     GLfloat XYZW[4];
     GLfloat RGBA[4];
 } Vertex;
+
 public:
     glm::vec4 color;
-    float rotation;
-    glm::vec2 position;
-    float scale;
+    //float rotation;
+    //glm::vec2 position;
+    //float scale;
 
-    // OpenGL buffers
-    GLuint vao = 0;
-    GLuint vboVertices = 0;
-    GLuint vboIndices = 0;
+    //Buffers
+    GLuint VaoId, VboId[2];
 
-    // Geometria (3 ou 6 vértices)
+    //Substitute later when we have sub classes?
     std::vector<Vertex> vertices;
     std::vector<GLubyte> indices;
 
-    Shape(const std::vector<glm::vec2>& points,
-        glm::vec4 color,
-        float rotation,
-        float scale);
+    Shape(const std::vector<glm::vec4>& points,const std::vector<GLubyte> index,glm::vec4 color);
 
     ~Shape();
 
     void changeColor(glm::vec4 newColor);
 
-    void draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal) const;
-    glm::mat4 getModelMatrix(glm::vec2 pos, float rot, float scal) const;
+    void draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal);
+    glm::mat4 getModelMatrix(glm::vec2 pos, float rot, float scal);
 
 private:
+    const GLuint POSITION = 0, COLOR = 1;
+
     void createBuffers();
 };
