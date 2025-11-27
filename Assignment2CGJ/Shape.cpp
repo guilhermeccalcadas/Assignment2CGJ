@@ -77,14 +77,14 @@ void Shape::changeColor(glm::vec4 newColor) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
 }
 
-glm::mat4 Shape::getModelMatrix(glm::vec2 pos, float rot, float scal) {
-    glm::mat4 M = glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0))
+glm::mat4 Shape::getModelMatrix(glm::vec3 pos, float rot, float scal) {
+    glm::mat4 M = glm::translate(glm::mat4(1.0f), pos)
         * glm::rotate(glm::mat4(1.0f), glm::radians(rot), glm::vec3(0, 0, 1))
         * glm::scale(glm::mat4(1.0f), glm::vec3(scal, scal, 1.0f));
     return M;
 }
 
-void Shape::draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal) {
+void Shape::draw(GLint matrixUniform, GLint colorUniform, glm::vec3 pos, float rot, float scal) {
     glm::mat4 M = getModelMatrix(pos, rot, scal);
 
     glUniformMatrix4fv(matrixUniform, 1, GL_FALSE, glm::value_ptr(M));

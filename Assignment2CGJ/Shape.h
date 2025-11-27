@@ -32,8 +32,8 @@ public:
 
     void changeColor(glm::vec4 newColor);
 
-    void draw(GLint matrixUniform, GLint colorUniform, glm::vec2 pos, float rot, float scal);
-    glm::mat4 getModelMatrix(glm::vec2 pos, float rot, float scal);
+    void draw(GLint matrixUniform, GLint colorUniform, glm::vec3 pos, float rot, float scal);
+    glm::mat4 getModelMatrix(glm::vec3 pos, float rot, float scal);
 
 private:
     const GLuint POSITION = 0, COLOR = 1;

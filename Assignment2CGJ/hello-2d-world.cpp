@@ -74,25 +74,25 @@ void MyApp::drawScene() {
   
   //Red big triangle
   triangleBase->changeColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0f, 0.0f), 333.0f, 1.0f);
+  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(0.0f, 0.0f, 0.0f), 333.0f, 1.0f);
   //Blue big triangle
   triangleBase->changeColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.3564f, -0.1816f), 18.0f, 1.0f);
+  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(0.3564f, -0.1816f, 0.0f), 18.0f, 1.0f);
   //Medium purple triangle
   triangleBase->changeColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
-  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0938f, 0.6251f), 198.0f, 0.707f);
+  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(0.0938f, 0.6251f, 0.0f), 198.0f, 0.707f);
   //Small orange triangle
   triangleBase->changeColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
-  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.7368f, -0.0580f), 63.0f, 0.5f);
+  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(0.7368f, -0.0580f, 0.0f), 63.0f, 0.5f);
   //Small cyan triangle
   triangleBase->changeColor(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
-  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(0.0908f, 0.1782f), 153.0f, 0.5f);
+  triangleBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(0.0908f, 0.1782f, 0.0f), 153.0f, 0.5f);
 
   //Green square
-  squareBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.0875f, 0.2690f), 333.0f, 0.5f);
+  squareBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(-0.0875f, 0.2690f, 0.0f), 333.0f, 0.5f);
 
   //Yellow paralellogram
-  paralelloBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec2(-0.1782f, 0.0908f), 333.0f, 0.5f);
+  paralelloBase->draw(MatrixId, Shaders->Uniforms["Cor"].index, glm::vec3(-0.1782f, 0.0908f, 0.0f), 333.0f, 0.5f);
   
   Shaders->unbind();
 }
