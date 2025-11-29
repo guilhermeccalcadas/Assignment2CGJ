@@ -22,8 +22,14 @@ public:
   void displayCallback(GLFWwindow *win, double elapsed) override;
   void windowCloseCallback(GLFWwindow *win) override;
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
+  void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+
 
 private:
+  bool useOrtho = false;
+  bool useCamera2 = false;
+
+
   const GLuint POSITION = 0, COLOR = 1, UBO_BP = 0;
   GLuint VaoId;
 
@@ -177,9 +183,6 @@ const glm::mat4 ProjectionMatrix2 =
     glm::perspective(glm::radians(30.0f), 4.0f / 3.0f, 1.0f, 15.0f);
 
 void MyApp::drawScene() {
-  Camera->setViewMatrix(ViewMatrix1);
-  Camera->setProjectionMatrix(ProjectionMatrix2);
-
   glBindVertexArray(VaoId);
   Shaders->bind();
 
@@ -196,6 +199,8 @@ void MyApp::initCallback(GLFWwindow *win) {
   createBufferObjects();
   createShaderProgram();
   Camera = std::make_unique<mgl::Camera>(UBO_BP);
+  Camera->setViewMatrix(ViewMatrix1);
+  Camera->setProjectionMatrix(ProjectionMatrix2);
 }
 
 void MyApp::windowCloseCallback(GLFWwindow *win) { destroyBufferObjects(); }
@@ -205,6 +210,29 @@ void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
+
+void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        switch (key){
+            case GLFW_KEY_P:
+                useOrtho = !useOrtho;
+                if (useOrtho)
+                    Camera->setProjectionMatrix(ProjectionMatrix1);
+                else
+                    Camera->setProjectionMatrix(ProjectionMatrix2);
+			    break;
+            case GLFW_KEY_C:
+                useCamera2 = !useCamera2;
+                if (useCamera2)
+                    Camera->setViewMatrix(ViewMatrix2);
+                else
+					Camera->setViewMatrix(ViewMatrix1);
+        default:
+            break;
+        }
+    }
+}
+
 
 /////////////////////////////////////////////////////////////////////////// MAIN
 
