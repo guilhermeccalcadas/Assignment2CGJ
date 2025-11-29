@@ -23,11 +23,27 @@ public:
   void windowCloseCallback(GLFWwindow *win) override;
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
   void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+  void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
 
 
 private:
+  // Camera control parameters
   bool useOrtho = false;
   bool useCamera2 = false;
+  float radius = 10.0f;
+  const float zoomSpeed = 1.0f;
+  const float minRadius = 2.0f;
+  const float maxRadius = 50.0f;
+  struct CameraState {
+      glm::mat4 viewMatrix;
+      glm::quat rotation;
+      float radius;
+  };
+  CameraState cam1;
+  CameraState cam2;
+  CameraState* activeCam = nullptr;
+  glm::vec3 target = glm::vec3(0.0f);
+
 
 
   const GLuint POSITION = 0, COLOR = 1, UBO_BP = 0;
@@ -41,6 +57,7 @@ private:
   void createBufferObjects();
   void destroyBufferObjects();
   void drawScene();
+  void updateCamera();
 };
 
 ////////////////////////////////////////////////////////////////// VAO, VBO, EBO
@@ -193,13 +210,33 @@ void MyApp::drawScene() {
   glBindVertexArray(0);
 }
 
+void MyApp::updateCamera() {
+    glm::vec3 initialPos(0.0f, 0.0f, activeCam->radius);
+    glm::vec3 rotatedPos = activeCam->rotation * initialPos;
+    glm::mat4 view = glm::lookAt(rotatedPos + target, target, glm::vec3(0, 1, 0));
+    activeCam->viewMatrix = view;
+
+    Camera->setViewMatrix(activeCam->viewMatrix);
+}
+
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
   createBufferObjects();
   createShaderProgram();
+
   Camera = std::make_unique<mgl::Camera>(UBO_BP);
-  Camera->setViewMatrix(ViewMatrix1);
+
+  cam1.viewMatrix = ViewMatrix1;
+  cam1.rotation = glm::quat_cast(ViewMatrix1);
+  cam1.radius = 10.0f;
+
+  cam2.viewMatrix = ViewMatrix2;
+  cam2.rotation = glm::quat_cast(ViewMatrix2);
+  cam2.radius = 10.0f;
+
+  activeCam = &cam1;
+  Camera->setViewMatrix(activeCam->viewMatrix);
   Camera->setProjectionMatrix(ProjectionMatrix2);
 }
 
@@ -212,26 +249,41 @@ void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
 
 void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        switch (key){
-            case GLFW_KEY_P:
-                useOrtho = !useOrtho;
-                if (useOrtho)
-                    Camera->setProjectionMatrix(ProjectionMatrix1);
-                else
-                    Camera->setProjectionMatrix(ProjectionMatrix2);
-			    break;
-            case GLFW_KEY_C:
-                useCamera2 = !useCamera2;
-                if (useCamera2)
-                    Camera->setViewMatrix(ViewMatrix2);
-                else
-					Camera->setViewMatrix(ViewMatrix1);
-        default:
-            break;
-        }
+    if (action != GLFW_PRESS) return;
+
+    switch (key) {
+
+    case GLFW_KEY_P:
+        useOrtho = !useOrtho;
+        Camera->setProjectionMatrix(useOrtho ? ProjectionMatrix1 : ProjectionMatrix2);
+        break;
+
+    case GLFW_KEY_C:
+        if (activeCam == &cam1)
+            activeCam = &cam2;
+        else
+            activeCam = &cam1;
+
+        Camera->setViewMatrix(activeCam->viewMatrix);
+        break;
+
+
+    default:
+        break;
     }
 }
+
+void MyApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
+    activeCam->radius -= yoffset * zoomSpeed;
+
+    if (activeCam->radius < minRadius) activeCam->radius = minRadius;
+    if (activeCam->radius > maxRadius) activeCam->radius = maxRadius;
+
+    updateCamera();
+}
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////// MAIN
