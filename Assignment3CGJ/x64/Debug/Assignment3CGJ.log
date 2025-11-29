@@ -1,3 +1,3 @@
 ﻿  hello-3d-world.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\hello-3d-world.cpp(279,34): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\hello-3d-world.cpp(287,34): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
   Assignment3CGJ.vcxproj -> C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\x64\Debug\Assignment3CGJ.exe

@@ -221,24 +221,34 @@ void MyApp::updateCamera() {
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
-void MyApp::initCallback(GLFWwindow *win) {
-  createBufferObjects();
-  createShaderProgram();
+void MyApp::initCallback(GLFWwindow* win) {
+    createBufferObjects();
+    createShaderProgram();
 
-  Camera = std::make_unique<mgl::Camera>(UBO_BP);
+    Camera = std::make_unique<mgl::Camera>(UBO_BP);
 
-  cam1.viewMatrix = ViewMatrix1;
-  cam1.rotation = glm::quat_cast(ViewMatrix1);
-  cam1.radius = 10.0f;
+    // Definir posição inicial das câmeras
+    glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
+    glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
 
-  cam2.viewMatrix = ViewMatrix2;
-  cam2.rotation = glm::quat_cast(ViewMatrix2);
-  cam2.radius = 10.0f;
+    // Calcular radius (distância ao target)
+    cam1.radius = glm::length(eye1);
+    cam2.radius = glm::length(eye2);
 
-  activeCam = &cam1;
-  Camera->setViewMatrix(activeCam->viewMatrix);
-  Camera->setProjectionMatrix(ProjectionMatrix2);
+    // Calcular quaternion olhando para o target (0,0,0)
+    cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
+    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
+
+    // Inicializar viewMatrix das câmeras
+    cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
+    cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
+
+    // Definir câmera ativa
+    activeCam = &cam1;
+    Camera->setViewMatrix(activeCam->viewMatrix);
+    Camera->setProjectionMatrix(ProjectionMatrix2);
 }
+
 
 void MyApp::windowCloseCallback(GLFWwindow *win) { destroyBufferObjects(); }
 
