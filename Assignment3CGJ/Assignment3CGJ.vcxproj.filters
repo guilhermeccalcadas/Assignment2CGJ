@@ -15,6 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="hello-3d-world.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh-loader.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
     <ClCompile Include="..\libs\mgl\mglApp.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -24,10 +30,10 @@
     <ClCompile Include="..\libs\mgl\mglError.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="..\libs\mgl\mglShader.cpp">
+    <ClCompile Include="..\libs\mgl\mglMesh.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="hello-3d-world.cpp">
+    <ClCompile Include="..\libs\mgl\mglShader.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
