@@ -22,8 +22,10 @@
     <ClCompile Include="..\libs\mgl\mglApp.cpp" />
     <ClCompile Include="..\libs\mgl\mglCamera.cpp" />
     <ClCompile Include="..\libs\mgl\mglError.cpp" />
+    <ClCompile Include="..\libs\mgl\mglMesh.cpp" />
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="hello-3d-world.cpp" />
+    <ClCompile Include="mesh-loader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -109,13 +111,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)libs\mgl</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\glm;$(SolutionDir)libs\glfw\include;$(SolutionDir)libs\glew\include;$(SolutionDir)libs\mgl;$(SolutionDir)libs\assimp\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\glew\lib\Release\x64;$(SolutionDir)libs\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\glew\lib\Release\x64;$(SolutionDir)libs\glfw\lib-vc2022;$(SolutionDir)libs\assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

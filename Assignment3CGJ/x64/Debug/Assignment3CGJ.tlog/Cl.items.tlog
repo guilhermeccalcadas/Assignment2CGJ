@@ -1,5 +1,7 @@
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\libs\mgl\mglApp.cpp;C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglApp.obj
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\libs\mgl\mglCamera.cpp;C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglCamera.obj
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\libs\mgl\mglError.cpp;C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglError.obj
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\libs\mgl\mglShader.cpp;C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglShader.obj
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\hello-3d-world.cpp;C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment3CGJ\x64\Debug\hello-3d-world.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\libs\mgl\mglApp.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglApp.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\libs\mgl\mglCamera.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglCamera.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\libs\mgl\mglError.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglError.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\libs\mgl\mglMesh.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglMesh.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\libs\mgl\mglShader.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mglShader.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\hello-3d-world.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\hello-3d-world.obj
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp;C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\x64\Debug\mesh-loader.obj
