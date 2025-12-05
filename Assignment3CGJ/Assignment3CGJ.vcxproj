@@ -26,6 +26,11 @@
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="hello-3d-world.cpp" />
     <ClCompile Include="mesh-loader.cpp" />
+    <ClCompile Include="Shape.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
