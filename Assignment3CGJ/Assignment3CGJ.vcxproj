@@ -27,6 +27,7 @@
     <ClCompile Include="hello-3d-world.cpp" />
     <ClCompile Include="mesh-loader.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shape.h" />

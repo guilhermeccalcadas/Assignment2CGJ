@@ -18,8 +18,10 @@ public:
   void initCallback(GLFWwindow *win) override;
   void displayCallback(GLFWwindow *win, double elapsed) override;
   void windowSizeCallback(GLFWwindow *win, int width, int height) override;
-  void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
-  void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) override;
+  void keyCallback(GLFWwindow *win, int key, int scancode, int action, int mods) override;
+  void scrollCallback(GLFWwindow *win, double xoffset, double yoffset) override;
+  void mouseButtonCallback(GLFWwindow* win, int button, int action, int mods) override;
+  void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
 
 private:
   // Camera control parameters
@@ -39,6 +41,11 @@ private:
   CameraState* activeCam = nullptr;
   glm::vec3 target = glm::vec3(0.0f);
 
+  bool rightMousePressed = false;
+  double lastCameraPosX = 0.0f;
+  double lastCameraPosY = 0.0f;
+  float rotationSpeed = 0.006f;
+  float pitchLimit = glm::radians(89.0f);
 
   const GLuint UBO_BP = 0;
   mgl::ShaderProgram *Shaders = nullptr;
@@ -51,6 +58,7 @@ private:
   void createCamera();
   void drawScene();
   void updateCamera();
+  float currentPitchAngle(glm::quat& pos);
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -171,6 +179,13 @@ void MyApp::updateCamera() {
     Camera->setViewMatrix(activeCam->viewMatrix);
 }
 
+float MyApp::currentPitchAngle(glm::quat& orientation) {
+    glm::vec3 initialForward(0.0f, 0.0f, -1.0f);
+    glm::vec3 forward = orientation * initialForward;
+    float pitch = asin(glm::clamp(forward.y, -1.0f, 1.0f));
+    return pitch;
+}
+
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
@@ -212,12 +227,70 @@ void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 }
 
 void MyApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
-    activeCam->radius -= yoffset * zoomSpeed;
+    if (!useOrtho) {
+        activeCam->radius -= yoffset * zoomSpeed;
 
-    if (activeCam->radius < minRadius) activeCam->radius = minRadius;
-    if (activeCam->radius > maxRadius) activeCam->radius = maxRadius;
+        if (activeCam->radius < minRadius) activeCam->radius = minRadius;
+        if (activeCam->radius > maxRadius) activeCam->radius = maxRadius;
 
+        updateCamera();
+    }
+}
+
+void MyApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        if (action == GLFW_PRESS) {
+            rightMousePressed = true;
+            glfwGetCursorPos(win, &lastCameraPosX, &lastCameraPosY);
+        }
+        else if (action == GLFW_RELEASE) {
+            rightMousePressed = false;
+        }
+    }
+}
+
+void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+    if (!rightMousePressed) {
+        lastCameraPosX = xpos;
+        lastCameraPosY = ypos;
+        return;
+    }
+
+    double distanceX = xpos - lastCameraPosX;
+    double distanceY = ypos - lastCameraPosY;
+    float yawAngle = -distanceX * rotationSpeed;
+    float pitchAngle = -distanceY * rotationSpeed;
+
+    glm::quat yaw = glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec3 localRight = activeCam->rotation * glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::quat pitch = glm::angleAxis(pitchAngle, glm::normalize(localRight));
+
+    // Apply yaw and pitch to the current rotation
+    glm::quat orientation = glm::normalize(pitch * yaw * activeCam->rotation);
+
+    /*
+    float orientationAngle = currentPitchAngle(orientation);
+    if (orientationAngle > pitchLimit) {
+        float currentPitch = currentPitchAngle(activeCam->rotation);
+        float maxDelta = pitchLimit - currentPitch;
+        float clampedPitchAngle = glm::clamp(pitchAngle, -fabs(maxDelta), fabs(maxDelta));
+        glm::quat safePitch = glm::angleAxis(clampedPitchAngle, glm::normalize(localRight));
+        orientation = glm::normalize(safePitch * yaw * activeCam->rotation);
+    }
+    else if (orientationAngle < -pitchLimit) {
+        float currentPitch = currentPitchAngle(activeCam->rotation);
+        float maxDelta = -pitchLimit - currentPitch;
+        float clampedPitchAngle = glm::clamp(pitchAngle, -fabs(maxDelta), fabs(maxDelta));
+        glm::quat safePitch = glm::angleAxis(clampedPitchAngle, glm::normalize(localRight));
+        orientation = glm::normalize(safePitch * yaw * activeCam->rotation);
+    }
+    */
+
+    activeCam->rotation = orientation;
     updateCamera();
+
+    lastCameraPosX = xpos;
+    lastCameraPosY = ypos;
 }
 
 /////////////////////////////////////////////////////////////////////////// MAIN

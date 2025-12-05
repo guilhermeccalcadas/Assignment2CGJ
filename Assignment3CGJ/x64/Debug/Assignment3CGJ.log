@@ -1,5 +1,5 @@
-﻿  hello-3d-world.cpp
-  mesh-loader.cpp
-C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(215,34): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
+﻿  mesh-loader.cpp
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(231,38): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(261,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\manue\Documents\CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(262,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Assignment3CGJ.vcxproj -> C:\Users\manue\Documents\CGJ\Assignment2CGJ\x64\Debug\Assignment3CGJ.exe
