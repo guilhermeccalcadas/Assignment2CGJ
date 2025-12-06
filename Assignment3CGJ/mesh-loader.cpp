@@ -28,7 +28,7 @@ private:
   float radius = 10.0f;
   const float zoomSpeed = 1.0f;
   const float minRadius = 2.0f;
-  const float maxRadius = 50.0f;
+  const float maxRadius = 300.0f;
   struct CameraState {
       glm::mat4 viewMatrix;
       glm::quat rotation;
@@ -39,24 +39,25 @@ private:
   CameraState* activeCam = nullptr;
   glm::vec3 target = glm::vec3(0.0f);
 
-
   const GLuint UBO_BP = 0;
   mgl::ShaderProgram *Shaders = nullptr;
   mgl::Camera *Camera = nullptr;
   GLint ModelMatrixId;
   mgl::Mesh *Mesh = nullptr;
 
+
   void createMeshes();
   void createShaderPrograms();
   void createCamera();
   void drawScene();
   void updateCamera();
+  void createScenegraph();
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
-  std::string mesh_dir = "./assets/models/";
+  std::string mesh_dir = "../assets/models/";
   // std::string mesh_file = "cube-v.obj";
   // std::string mesh_file = "cube-vn-flat.obj";
   // std::string mesh_file = "cube-vn-smooth.obj";
@@ -68,14 +69,20 @@ void MyApp::createMeshes() {
   // std::string mesh_file = "suzanne-vtn-smooth.obj";
   // std::string mesh_file = "teapot-vn-flat.obj";
   // std::string mesh_file = "teapot-vn-smooth.obj";
-  std::string mesh_file = "bunny-vn-flat.obj";
+  //std::string mesh_file = "bunny-vn-flat.obj";
   // std::string mesh_file = "bunny-vn-smooth.obj";
   //std::string mesh_file = "monkey-torus-vtn-flat.obj";
+  std::string mesh_file = "BigTriangle.obj";
+
   std::string mesh_fullname = mesh_dir + mesh_file;
 
   Mesh = new mgl::Mesh();
   Mesh->joinIdenticalVertices();
   Mesh->create(mesh_fullname);
+}
+
+void createScenegraph() {
+
 }
 
 ///////////////////////////////////////////////////////////////////////// SHADER
@@ -116,19 +123,29 @@ const glm::mat4 ViewMatrix2 =
                 glm::vec3(0.0f, 1.0f, 0.0f));
 
 // Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
-const glm::mat4 ProjectionMatrix1 =
-    glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
+//const glm::mat4 ProjectionMatrix1 =
+//    glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
 
 // Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
+//const glm::mat4 ProjectionMatrix2 =
+//    glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
+
+// DEPOIS:
+// Orthographic: Aumentamos a caixa para 100x100 (-50 a 50) e a profundidade para 500
+const glm::mat4 ProjectionMatrix1 =
+glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.1f, 500.0f);
+
+// Perspective: Mudamos o zNear para 0.1 e o zFar para 500 (para veres longe)
+// Otimizei também o FOV para 45 graus (30 é muito "zoomado")
 const glm::mat4 ProjectionMatrix2 =
-    glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
+glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 500.0f);
 
 void MyApp::createCamera() {
   Camera = new mgl::Camera(UBO_BP);
 
   // Definir posição inicial das câmeras
-  glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
-  glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
+  glm::vec3 eye1 = glm::vec3(60.0f, 60.0f, 60.0f);
+  glm::vec3 eye2 = glm::vec3(-60.0f, -60.0f, -60.0f);
 
   // Calcular radius (distância ao target)
   cam1.radius = glm::length(eye1);
@@ -177,6 +194,7 @@ void MyApp::initCallback(GLFWwindow *win) {
   createMeshes();
   createShaderPrograms(); // after mesh;
   createCamera();
+  createScenegraph();
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
