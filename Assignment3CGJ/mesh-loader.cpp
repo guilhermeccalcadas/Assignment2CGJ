@@ -242,7 +242,7 @@ void MyApp::drawScene() {
 
     drawMesh(MeshesList[0], glm::vec3(-0.445f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f, 1.0f);
     drawMesh(MeshesList[1], glm::vec3(0.0f, 0.5f, -0.445f), 90.0f, 0.0f, 0.0f, 1.0f);
-    drawMesh(MeshesList[2], glm::vec3(0.0f, 0.5f, 0.2225f), 90.0f, 0.0f, 90.0f, 1.0f);
+    drawMesh(MeshesList[2], glm::vec3(0.0f, 0.5f, 0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
     drawMesh(MeshesList[3], glm::vec3(0.445f, 0.5f, -0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
     drawMesh(MeshesList[4], glm::vec3(0.2225f, 0.5f, 0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
     drawMesh(MeshesList[5], glm::vec3(-0.11125f, 0.5f, 0.33375f), 90.0f, 0.0f, 0.0f, 1.0f); //paralellogram
