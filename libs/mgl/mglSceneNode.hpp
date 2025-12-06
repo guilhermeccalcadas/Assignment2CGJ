@@ -17,7 +17,7 @@ class SceneNode : public IDrawable {
 public:
   SceneNode();
   explicit SceneNode(Mesh* mesh, ShaderProgram* shader = nullptr);
-  ~SceneNode() override;
+  //~SceneNode() override;
 
   void setMesh(Mesh* mesh);
   void setShader(ShaderProgram* shader);

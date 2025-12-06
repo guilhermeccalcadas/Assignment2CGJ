@@ -23,6 +23,7 @@
     <ClCompile Include="..\libs\mgl\mglCamera.cpp" />
     <ClCompile Include="..\libs\mgl\mglError.cpp" />
     <ClCompile Include="..\libs\mgl\mglMesh.cpp" />
+    <ClCompile Include="..\libs\mgl\mglSceneNode.cpp" />
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="hello-3d-world.cpp" />
     <ClCompile Include="mesh-loader.cpp" />

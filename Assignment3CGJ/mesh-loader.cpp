@@ -52,6 +52,15 @@ private:
   mgl::Camera *Camera = nullptr;
   GLint ModelMatrixId;
   mgl::Mesh *Mesh = nullptr;
+  mgl::Mesh* Mesh2 = nullptr;
+  mgl::Mesh* Mesh3 = nullptr;
+  mgl::Mesh* Mesh4 = nullptr;
+  mgl::Mesh* Mesh5 = nullptr;
+  mgl::Mesh* Mesh6 = nullptr;
+  mgl::Mesh* Mesh7 = nullptr;
+  mgl::Mesh* Mesh8 = nullptr;
+  std::vector<mgl::Mesh*> MeshesList;
+
 
   void createMeshes();
   void createShaderPrograms();
@@ -64,27 +73,63 @@ private:
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
-  std::string mesh_dir = "../assets/models/";
-  // std::string mesh_file = "cube-v.obj";
-  // std::string mesh_file = "cube-vn-flat.obj";
-  // std::string mesh_file = "cube-vn-smooth.obj";
-  // std::string mesh_file = "cube-vt.obj";
-  // std::string mesh_file = "cube-vt2.obj";
-  // std::string mesh_file = "torus-vtn-flat.obj";
-  // std::string mesh_file = "torus-vtn-smooth.obj";
-  // std::string mesh_file = "suzanne-vtn-flat.obj";
-  // std::string mesh_file = "suzanne-vtn-smooth.obj";
-  // std::string mesh_file = "teapot-vn-flat.obj";
-  // std::string mesh_file = "teapot-vn-smooth.obj";
-  //std::string mesh_file = "bunny-vn-flat.obj";
-  // std::string mesh_file = "bunny-vn-smooth.obj";
+  std::string mesh_dir = "./assets/models/";
 
+  /*
   std::string mesh_file = "Triangle1.obj";
+  std::string mesh_file = "Triangle2.obj";
+  std::string mesh_file = "Triangle4.obj";
+  std::string mesh_file = "Triangle6.obj";
+  std::string mesh_file = "Triangle7.obj";
+  std::string mesh_file = "Cube5.obj";
+  std::string mesh_file = "Paralelogram3a.obj";
+  std::string mesh_file = "Table.obj";
   std::string mesh_fullname = mesh_dir + mesh_file;
 
   Mesh = new mgl::Mesh();
   Mesh->joinIdenticalVertices();
   Mesh->create(mesh_fullname);
+  */
+  Mesh = new mgl::Mesh();
+  Mesh->joinIdenticalVertices();
+  Mesh->create(mesh_dir + "Triangle1.obj");
+
+  Mesh2 = new mgl::Mesh();
+  Mesh2->joinIdenticalVertices();
+  Mesh2->create(mesh_dir + "Triangle2.obj");
+
+  Mesh3 = new mgl::Mesh();
+  Mesh3->joinIdenticalVertices();
+  Mesh3->create(mesh_dir + "Triangle4.obj");
+
+  Mesh4 = new mgl::Mesh();
+  Mesh4->joinIdenticalVertices();
+  Mesh4->create(mesh_dir + "Triangle6.obj");
+
+  Mesh5 = new mgl::Mesh();
+  Mesh5->joinIdenticalVertices();
+  Mesh5->create(mesh_dir + "Triangle7.obj");
+
+  Mesh6 = new mgl::Mesh();
+  Mesh6->joinIdenticalVertices();
+  Mesh6->create(mesh_dir + "Paralelogram3a.obj");
+
+  Mesh7 = new mgl::Mesh();
+  Mesh7->joinIdenticalVertices();
+  Mesh7->create(mesh_dir + "Table.obj");
+
+  Mesh8 = new mgl::Mesh();
+  Mesh8->joinIdenticalVertices();
+  Mesh8->create(mesh_dir + "Cube5.obj");
+
+  MeshesList.push_back(Mesh);
+  MeshesList.push_back(Mesh2);
+  MeshesList.push_back(Mesh3);
+  MeshesList.push_back(Mesh4);
+  MeshesList.push_back(Mesh5);
+  MeshesList.push_back(Mesh6);
+  MeshesList.push_back(Mesh7);
+  MeshesList.push_back(Mesh8);
 }
 
 ///////////////////////////////////////////////////////////////////////// SHADER
@@ -165,11 +210,16 @@ void MyApp::createCamera() {
 glm::mat4 ModelMatrix(1.0f);
 
 void MyApp::drawScene() {
-  Shaders->bind();
-  glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-  Mesh->draw();
-  Shaders->unbind();
+    Shaders->bind();
+    glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+
+    for (mgl::Mesh* m : MeshesList) {
+        if (m) m->draw();
+    }
+
+    Shaders->unbind();
 }
+
 
 void MyApp::updateCamera() {
     glm::vec3 initialPos(0.0f, 0.0f, activeCam->radius);

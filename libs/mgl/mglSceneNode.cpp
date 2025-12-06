@@ -12,13 +12,13 @@ namespace mgl {
 
 SceneNode::SceneNode() : mesh_(nullptr), shader_(nullptr), transform(glm::mat4(1.0f)) {}
 SceneNode::SceneNode(Mesh* mesh, ShaderProgram* shader) : mesh_(mesh), shader_(shader), transform(glm::mat4(1.0f)) {}
-
+/*
 SceneNode::~SceneNode() {
   // Destrói os filhos (policy: SceneNode é dono dos filhos)
   for (auto c : children_) delete c;
   children_.clear();
 }
-
+*/
 void SceneNode::setMesh(Mesh* mesh) { mesh_ = mesh; }
 void SceneNode::setShader(ShaderProgram* shader) { shader_ = shader; }
 
