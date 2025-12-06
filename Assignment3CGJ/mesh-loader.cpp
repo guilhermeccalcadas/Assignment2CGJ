@@ -67,13 +67,25 @@ private:
   void createCamera();
   void drawScene();
   void updateCamera();
-  float currentPitchAngle(glm::quat& pos);
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
   std::string mesh_dir = "./assets/models/";
+  // std::string mesh_file = "cube-v.obj";
+  // std::string mesh_file = "cube-vn-flat.obj";
+  // std::string mesh_file = "cube-vn-smooth.obj";
+  // std::string mesh_file = "cube-vt.obj";
+  // std::string mesh_file = "cube-vt2.obj";
+  // std::string mesh_file = "torus-vtn-flat.obj";
+  // std::string mesh_file = "torus-vtn-smooth.obj";
+  // std::string mesh_file = "suzanne-vtn-flat.obj";
+  // std::string mesh_file = "suzanne-vtn-smooth.obj";
+  // std::string mesh_file = "teapot-vn-flat.obj";
+  // std::string mesh_file = "teapot-vn-smooth.obj";
+  //std::string mesh_file = "bunny-vn-flat.obj";
+  // std::string mesh_file = "bunny-vn-smooth.obj";
 
   /*
   std::string mesh_file = "Triangle1.obj";
@@ -180,11 +192,11 @@ const glm::mat4 ProjectionMatrix2 =
 void MyApp::createCamera() {
   Camera = new mgl::Camera(UBO_BP);
 
-  // Definir posição inicial das câmeras
+  // Definir posiï¿½ï¿½o inicial das cï¿½meras
   glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
   glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
 
-  // Calcular radius (distância ao target)
+  // Calcular radius (distï¿½ncia ao target)
   cam1.radius = glm::length(eye1);
   cam2.radius = glm::length(eye2);
 
@@ -192,11 +204,11 @@ void MyApp::createCamera() {
   cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
   cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
 
-  // Inicializar viewMatrix das câmeras
+  // Inicializar viewMatrix das cï¿½meras
   cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
   cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
 
-  // Definir câmera ativa
+  // Definir cï¿½mera ativa
   activeCam = &cam1;
   Camera->setViewMatrix(activeCam->viewMatrix);
   Camera->setProjectionMatrix(ProjectionMatrix2);
@@ -224,17 +236,11 @@ void MyApp::drawScene() {
 void MyApp::updateCamera() {
     glm::vec3 initialPos(0.0f, 0.0f, activeCam->radius);
     glm::vec3 rotatedPos = activeCam->rotation * initialPos;
-    glm::mat4 view = glm::lookAt(rotatedPos + target, target, glm::vec3(0, 1, 0));
+    glm::vec3 localUp = activeCam->rotation * glm::vec3(0, 1, 0);
+    glm::mat4 view = glm::lookAt(rotatedPos + target, target, glm::normalize(localUp));
     activeCam->viewMatrix = view;
 
     Camera->setViewMatrix(activeCam->viewMatrix);
-}
-
-float MyApp::currentPitchAngle(glm::quat& orientation) {
-    glm::vec3 initialForward(0.0f, 0.0f, -1.0f);
-    glm::vec3 forward = orientation * initialForward;
-    float pitch = asin(glm::clamp(forward.y, -1.0f, 1.0f));
-    return pitch;
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -312,30 +318,13 @@ void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
     float yawAngle = -distanceX * rotationSpeed;
     float pitchAngle = -distanceY * rotationSpeed;
 
-    glm::quat yaw = glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec3 localUp = activeCam->rotation * glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::quat yaw = glm::angleAxis(yawAngle, glm::normalize(localUp));
     glm::vec3 localRight = activeCam->rotation * glm::vec3(1.0f, 0.0f, 0.0f);
     glm::quat pitch = glm::angleAxis(pitchAngle, glm::normalize(localRight));
 
     // Apply yaw and pitch to the current rotation
     glm::quat orientation = glm::normalize(pitch * yaw * activeCam->rotation);
-
-    /*
-    float orientationAngle = currentPitchAngle(orientation);
-    if (orientationAngle > pitchLimit) {
-        float currentPitch = currentPitchAngle(activeCam->rotation);
-        float maxDelta = pitchLimit - currentPitch;
-        float clampedPitchAngle = glm::clamp(pitchAngle, -fabs(maxDelta), fabs(maxDelta));
-        glm::quat safePitch = glm::angleAxis(clampedPitchAngle, glm::normalize(localRight));
-        orientation = glm::normalize(safePitch * yaw * activeCam->rotation);
-    }
-    else if (orientationAngle < -pitchLimit) {
-        float currentPitch = currentPitchAngle(activeCam->rotation);
-        float maxDelta = -pitchLimit - currentPitch;
-        float clampedPitchAngle = glm::clamp(pitchAngle, -fabs(maxDelta), fabs(maxDelta));
-        glm::quat safePitch = glm::angleAxis(clampedPitchAngle, glm::normalize(localRight));
-        orientation = glm::normalize(safePitch * yaw * activeCam->rotation);
-    }
-    */
 
     activeCam->rotation = orientation;
     updateCamera();
