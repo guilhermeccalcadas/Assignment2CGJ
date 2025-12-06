@@ -26,7 +26,6 @@
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="hello-3d-world.cpp" />
     <ClCompile Include="mesh-loader.cpp" />
-    <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
