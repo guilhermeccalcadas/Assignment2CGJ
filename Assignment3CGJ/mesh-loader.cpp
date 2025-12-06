@@ -64,7 +64,7 @@ private:
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
-  std::string mesh_dir = "./assets/models/";
+  std::string mesh_dir = "../assets/models/";
   // std::string mesh_file = "cube-v.obj";
   // std::string mesh_file = "cube-vn-flat.obj";
   // std::string mesh_file = "cube-vn-smooth.obj";
@@ -76,9 +76,10 @@ void MyApp::createMeshes() {
   // std::string mesh_file = "suzanne-vtn-smooth.obj";
   // std::string mesh_file = "teapot-vn-flat.obj";
   // std::string mesh_file = "teapot-vn-smooth.obj";
-  std::string mesh_file = "bunny-vn-flat.obj";
+  //std::string mesh_file = "bunny-vn-flat.obj";
   // std::string mesh_file = "bunny-vn-smooth.obj";
-  //std::string mesh_file = "monkey-torus-vtn-flat.obj";
+
+  std::string mesh_file = "Triangle1.obj";
   std::string mesh_fullname = mesh_dir + mesh_file;
 
   Mesh = new mgl::Mesh();

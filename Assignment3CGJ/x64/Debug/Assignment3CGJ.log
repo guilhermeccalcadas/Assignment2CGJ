@@ -1,28 +1,5 @@
-﻿  mglApp.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\libs\mgl\mglApp.hpp(14,10): error C1083: Não é possível abrir arquivo incluir: 'glm/ext.hpp': No such file or directory
-  (compilando o arquivo fonte '../libs/mgl/mglApp.cpp')
-  
-  mglCamera.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\libs\mgl\mglCamera.hpp(13,10): error C1083: Não é possível abrir arquivo incluir: 'glm/ext.hpp': No such file or directory
-  (compilando o arquivo fonte '../libs/mgl/mglCamera.cpp')
-  
-  mglError.cpp
-  mglMesh.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\libs\mgl\mglMesh.hpp(16,10): error C1083: Não é possível abrir arquivo incluir: 'glm/glm.hpp': No such file or directory
-  (compilando o arquivo fonte '../libs/mgl/mglMesh.cpp')
-  
-  mglShader.cpp
-  hello-3d-world.cpp
-  mesh-loader.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\libs\mgl\mglApp.hpp(14,10): error C1083: Não é possível abrir arquivo incluir: 'glm/ext.hpp': No such file or directory
-  (compilando o arquivo fonte 'mesh-loader.cpp')
-  
-  Shape.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\Shape.h(3,10): error C1083: Não é possível abrir arquivo incluir: 'glm/glm.hpp': No such file or directory
-  (compilando o arquivo fonte 'Shape.cpp')
-  
-  Triangle.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\Triangle.h(3,10): error C1083: Não é possível abrir arquivo incluir: 'glm/glm.hpp': No such file or directory
-  (compilando o arquivo fonte 'Triangle.cpp')
-  
-  Gerando Código...
+﻿  mesh-loader.cpp
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(232,38): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(262,20): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(263,22): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+  Assignment3CGJ.vcxproj -> C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\x64\Debug\Assignment3CGJ.exe
