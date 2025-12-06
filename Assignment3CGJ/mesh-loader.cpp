@@ -67,6 +67,7 @@ private:
   void createCamera();
   void drawScene();
   void updateCamera();
+  void drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -219,15 +220,40 @@ void MyApp::createCamera() {
 
 /////////////////////////////////////////////////////////////////////////// DRAW
 
-glm::mat4 ModelMatrix(1.0f);
+glm::mat4 ModelMatrix;
+
+glm::mat4 getModel(glm::vec3 pos, float rotX, float rotY, float rotZ, float scal) {
+    glm::mat4 M = glm::translate(glm::mat4(1.0f), pos)
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotX), glm::vec3(1, 0, 0))
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotY), glm::vec3(0, 1, 0))
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotZ), glm::vec3(0, 0, 1))
+        * glm::scale(glm::mat4(1.0f), glm::vec3(scal, scal, 1.0f));
+    return M;
+}
+
+void MyApp::drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal) {
+    ModelMatrix = getModel(pos, rotX, rotY, rotZ, scal);
+    glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+    m->draw();
+}
 
 void MyApp::drawScene() {
     Shaders->bind();
-    glUniformMatrix4fv(ModelMatrixId, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
+    drawMesh(MeshesList[0], glm::vec3(-0.445f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f, 1.0f);
+    drawMesh(MeshesList[1], glm::vec3(0.0f, 0.5f, -0.445f), 90.0f, 0.0f, 0.0f, 1.0f);
+    drawMesh(MeshesList[2], glm::vec3(0.0f, 0.5f, 0.2225f), 90.0f, 0.0f, 90.0f, 1.0f);
+    drawMesh(MeshesList[3], glm::vec3(0.445f, 0.5f, -0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
+    drawMesh(MeshesList[4], glm::vec3(0.2225f, 0.5f, 0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
+    drawMesh(MeshesList[5], glm::vec3(-0.11125f, 0.5f, 0.33375f), 90.0f, 0.0f, 0.0f, 1.0f); //paralellogram
+    drawMesh(MeshesList[6], glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 1.0f); //table
+    drawMesh(MeshesList[7], glm::vec3(0.2225f, 0.5f, 0.0f), 90.0f, 0.0f, 0.0f, 1.0f); //square
+
+    /*
     for (mgl::Mesh* m : MeshesList) {
         if (m) m->draw();
     }
+    */
 
     Shaders->unbind();
 }
@@ -236,7 +262,7 @@ void MyApp::drawScene() {
 void MyApp::updateCamera() {
     glm::vec3 initialPos(0.0f, 0.0f, activeCam->radius);
     glm::vec3 rotatedPos = activeCam->rotation * initialPos;
-    glm::vec3 localUp = activeCam->rotation * glm::vec3(0, 1, 0);
+    glm::vec3 localUp = activeCam->rotation * glm::vec3(0.0f, 1.0f, 0.0f);
     glm::mat4 view = glm::lookAt(rotatedPos + target, target, glm::normalize(localUp));
     activeCam->viewMatrix = view;
 
