@@ -10,6 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../mgl/mgl.hpp"
+#include "../mgl/mglSceneNode.hpp"
+#include <iostream>
+
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
@@ -61,13 +64,20 @@ private:
   mgl::Mesh* Mesh8 = nullptr;
   std::vector<mgl::Mesh*> MeshesList;
 
+  mgl::SceneNode* root = nullptr;
+  mgl::SceneNode* tableNode = nullptr;
+  std::vector<mgl::SceneNode*> nodes;
+
+
 
   void createMeshes();
   void createShaderPrograms();
   void createCamera();
   void drawScene();
   void updateCamera();
+  glm::mat4 getModel(glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
   void drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
+  void createSceneGraph();
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -170,6 +180,46 @@ void MyApp::createShaderPrograms() {
   ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
 
+void MyApp::createSceneGraph() {
+    root = new mgl::SceneNode(nullptr, nullptr);   // nó raiz vazio
+
+    // Nó da mesa — será o pai de tudo
+    tableNode = new mgl::SceneNode(Mesh7, Shaders);
+    tableNode->transform = glm::mat4(1.0f); // mesa no centro
+    root->addChild(tableNode);
+
+    auto n0 = new mgl::SceneNode(MeshesList[0], Shaders);
+    n0->transform = getModel(glm::vec3(-0.445f, 0.5f, 0.0f), 90, 0, -90, 1.0f);
+    tableNode->addChild(n0);
+    nodes.push_back(n0);
+
+    auto n1 = new mgl::SceneNode(MeshesList[1], Shaders);
+    n1->transform = getModel(glm::vec3(0.0f, 0.5f, -0.445f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n1); nodes.push_back(n1);
+
+    auto n2 = new mgl::SceneNode(MeshesList[2], Shaders);
+    n2->transform = getModel(glm::vec3(0.0f, 0.5f, 0.2225f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n2); nodes.push_back(n2);
+
+    auto n3 = new mgl::SceneNode(MeshesList[3], Shaders);
+    n3->transform = getModel(glm::vec3(0.445f, 0.5f, -0.2225f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n3); nodes.push_back(n3);
+
+    auto n4 = new mgl::SceneNode(MeshesList[4], Shaders);
+    n4->transform = getModel(glm::vec3(0.2225f, 0.5f, 0.2225f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n4); nodes.push_back(n4);
+
+    auto n5 = new mgl::SceneNode(MeshesList[5], Shaders);
+    n5->transform = getModel(glm::vec3(-0.11125f, 0.5f, 0.33375f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n5); nodes.push_back(n5);
+
+    auto n7 = new mgl::SceneNode(MeshesList[7], Shaders);
+    n7->transform = getModel(glm::vec3(0.2225f, 0.5f, 0.0f), 90, 0, 0, 1.0f);
+    tableNode->addChild(n7); nodes.push_back(n7);
+    std::cout << "Created Scenegraph" << std::endl;
+    
+}
+
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
 // Eye(5,5,5) Center(0,0,0) Up(0,1,0)
@@ -222,7 +272,7 @@ void MyApp::createCamera() {
 
 glm::mat4 ModelMatrix;
 
-glm::mat4 getModel(glm::vec3 pos, float rotX, float rotY, float rotZ, float scal) {
+glm::mat4 MyApp::getModel(glm::vec3 pos, float rotX, float rotY, float rotZ, float scal) {
     glm::mat4 M = glm::translate(glm::mat4(1.0f), pos)
         * glm::rotate(glm::mat4(1.0f), glm::radians(rotX), glm::vec3(1, 0, 0))
         * glm::rotate(glm::mat4(1.0f), glm::radians(rotY), glm::vec3(0, 1, 0))
@@ -238,25 +288,9 @@ void MyApp::drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float 
 }
 
 void MyApp::drawScene() {
-    Shaders->bind();
-
-    drawMesh(MeshesList[0], glm::vec3(-0.445f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f, 1.0f);
-    drawMesh(MeshesList[1], glm::vec3(0.0f, 0.5f, -0.445f), 90.0f, 0.0f, 0.0f, 1.0f);
-    drawMesh(MeshesList[2], glm::vec3(0.0f, 0.5f, 0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
-    drawMesh(MeshesList[3], glm::vec3(0.445f, 0.5f, -0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
-    drawMesh(MeshesList[4], glm::vec3(0.2225f, 0.5f, 0.2225f), 90.0f, 0.0f, 0.0f, 1.0f);
-    drawMesh(MeshesList[5], glm::vec3(-0.11125f, 0.5f, 0.33375f), 90.0f, 0.0f, 0.0f, 1.0f); //paralellogram
-    drawMesh(MeshesList[6], glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f, 1.0f); //table
-    drawMesh(MeshesList[7], glm::vec3(0.2225f, 0.5f, 0.0f), 90.0f, 0.0f, 0.0f, 1.0f); //square
-
-    /*
-    for (mgl::Mesh* m : MeshesList) {
-        if (m) m->draw();
-    }
-    */
-
-    Shaders->unbind();
+    root->draw(); // delega tudo para o scene graph
 }
+
 
 
 void MyApp::updateCamera() {
@@ -275,6 +309,7 @@ void MyApp::initCallback(GLFWwindow *win) {
   createMeshes();
   createShaderPrograms(); // after mesh;
   createCamera();
+  createSceneGraph();
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
