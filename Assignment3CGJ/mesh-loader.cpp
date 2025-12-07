@@ -159,39 +159,77 @@ void MyApp::createShaderPrograms() {
   ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
 
+struct TransformationConfiguration {
+    glm::vec3 pos;
+    float rotX;
+    float rotY;
+    float rotZ;
+};
+
+const float SIDE = 0.89; //length of a side of the pickagram in square form
+
+TransformationConfiguration sealConfig[8] = {
+    { glm::vec3(0.5f, 0.8f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
+    { glm::vec3(0.9f, 0.8f, 0.0f), 0.0f, 0.0f, 153.0f }, //triangle 2
+    { glm::vec3(1.2f, 0.8f, 0.0f), 0.0f, 0.0f, 18.0f }, //triangle 4
+    { glm::vec3(0.0f, 0.6f, 0.0f), 0.0f, 0.0f, 198.0f }, //triangle 6
+    { glm::vec3(0.2f, 1.2f, 0.0f), 0.0f, 0.0f, 18.0f }, // triangle 7
+    { glm::vec3(0.0f, 0.3f, 0.0f), 0.0f, 0.0f, 288.0f }, //paralellogram 3a
+    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
+    { glm::vec3(-0.1f, 1.0f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
+};
+
+TransformationConfiguration squareConfig[8] = { //SWITCH THE NAMES LATER
+    { glm::vec3(-SIDE / 2 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f }, //triangle 1
+    { glm::vec3(-0.5f, 0.5f, -SIDE / 2), 90.0f, 0.0f, 0.0f }, //triangle 2
+    { glm::vec3(-0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 4
+    { glm::vec3(SIDE / 2 - 0.5f, 0.5f, -SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 6
+    { glm::vec3(SIDE / 4 - 0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, // triangle 7
+    { glm::vec3(-SIDE / 8 - 0.5f, 0.5f, SIDE / 4 + SIDE / 8), 90.0f, 0.0f, 0.0f }, //paralellogram 3a
+    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
+    { glm::vec3(SIDE / 4 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, 0.0f } //square 5
+};
+
 void MyApp::createSceneGraph() {
     root = new mgl::SceneNode(nullptr, nullptr);
     tableNode = new mgl::SceneNode(Mesh7, Shaders);
     tableNode->transform = glm::mat4(1.0f);
     root->addChild(tableNode);
 
-    auto n0 = new mgl::SceneNode(MeshesList[0], Shaders);
-    n0->transform = getModel(glm::vec3(-0.445f, 0.5f, 0.0f), 90, 0, -90, 1.0f);
+    auto n0 = new mgl::SceneNode(MeshesList[0], Shaders); //triangle 1
+    n0->transform =
+        getModel(squareConfig[0].pos, squareConfig[0].rotX, squareConfig[0].rotY, squareConfig[0].rotZ, 1.0f);
     tableNode->addChild(n0);
     nodes.push_back(n0);
 
-    auto n1 = new mgl::SceneNode(MeshesList[1], Shaders);
-    n1->transform = getModel(glm::vec3(0.0f, 0.5f, -0.445f), 90, 0, 0, 1.0f);
+    auto n1 = new mgl::SceneNode(MeshesList[1], Shaders); //triangle 2
+    n1->transform =
+        getModel(squareConfig[1].pos, squareConfig[1].rotX, squareConfig[1].rotY, squareConfig[1].rotZ, 1.0f);
     tableNode->addChild(n1); nodes.push_back(n1);
 
-    auto n2 = new mgl::SceneNode(MeshesList[2], Shaders);
-    n2->transform = getModel(glm::vec3(0.0f, 0.5f, 0.2225f), 90, 0, 0, 1.0f);
+    auto n2 = new mgl::SceneNode(MeshesList[2], Shaders); //triangle 4
+    n2->transform =
+        getModel(squareConfig[2].pos, squareConfig[2].rotX, squareConfig[2].rotY, squareConfig[2].rotZ, 1.0f);
     tableNode->addChild(n2); nodes.push_back(n2);
 
-    auto n3 = new mgl::SceneNode(MeshesList[3], Shaders);
-    n3->transform = getModel(glm::vec3(0.445f, 0.5f, -0.2225f), 90, 0, 0, 1.0f);
+    auto n3 = new mgl::SceneNode(MeshesList[3], Shaders); //triangle 6
+    n3->transform =
+        getModel(squareConfig[3].pos, squareConfig[3].rotX, squareConfig[3].rotY, squareConfig[3].rotZ, 1.0f);
     tableNode->addChild(n3); nodes.push_back(n3);
 
-    auto n4 = new mgl::SceneNode(MeshesList[4], Shaders);
-    n4->transform = getModel(glm::vec3(0.2225f, 0.5f, 0.2225f), 90, 0, 0, 1.0f);
+    auto n4 = new mgl::SceneNode(MeshesList[4], Shaders); //triangle 7
+    n4->transform =
+        getModel(squareConfig[4].pos, squareConfig[4].rotX, squareConfig[4].rotY, squareConfig[4].rotZ, 1.0f);
     tableNode->addChild(n4); nodes.push_back(n4);
 
-    auto n5 = new mgl::SceneNode(MeshesList[5], Shaders);
-    n5->transform = getModel(glm::vec3(-0.11125f, 0.5f, 0.33375f), 90, 0, 0, 1.0f);
+    auto n5 = new mgl::SceneNode(MeshesList[5], Shaders); //paralellogram 3a
+    n5->transform =
+        getModel(squareConfig[5].pos, squareConfig[5].rotX, squareConfig[5].rotY, squareConfig[5].rotZ, 1.0f);
     tableNode->addChild(n5); nodes.push_back(n5);
 
-    auto n7 = new mgl::SceneNode(MeshesList[7], Shaders);
-    n7->transform = getModel(glm::vec3(0.2225f, 0.5f, 0.0f), 90, 0, 0, 1.0f);
+    auto n7 = new mgl::SceneNode(MeshesList[7], Shaders); //square 5
+    n7->transform =
+        getModel(squareConfig[7].pos, squareConfig[7].rotX, squareConfig[7].rotY, squareConfig[7].rotZ, 1.0f);
     tableNode->addChild(n7); nodes.push_back(n7);  
 }
 
