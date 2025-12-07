@@ -34,14 +34,18 @@ private:
   const float zoomSpeed = 1.0f;
   const float minRadius = 2.0f;
   const float maxRadius = 50.0f;
-  struct CameraState {
+  struct CameraInfo {
       glm::mat4 viewMatrix;
+      glm::mat4 projectionMatrix;
       glm::quat rotation;
       float radius;
+      bool isOrtho;
   };
-  CameraState cam1;
-  CameraState cam2;
-  CameraState* activeCam = nullptr;
+
+  CameraInfo cam1;
+  CameraInfo cam2;
+  CameraInfo* activeCam = nullptr;
+
   glm::vec3 target = glm::vec3(0.0f);
 
   bool rightMousePressed = false;
@@ -81,6 +85,7 @@ private:
   glm::mat4 getModel(glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
   void drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
   void createSceneGraph();
+  static void calculateProjection(CameraInfo& cam, int width, int height);
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -192,66 +197,30 @@ void MyApp::createSceneGraph() {
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
 
-// Eye(5,5,5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix1 =
-    glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
-// Eye(-5,-5,-5) Center(0,0,0) Up(0,1,0)
-const glm::mat4 ViewMatrix2 =
-    glm::lookAt(glm::vec3(-5.0f, -5.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f));
-
-// Orthographic LeftRight(-2,2) BottomTop(-2,2) NearFar(1,10)
-const glm::mat4 ProjectionMatrix1 =
-    glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 10.0f);
-
-// Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
-const glm::mat4 ProjectionMatrix2 =
-    glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
 
 void MyApp::createCamera() {
     Camera = new mgl::Camera(UBO_BP);
 
-    // --- NOVO: Inicializar as Matrizes de Projeção ---
-    // Usamos o tamanho inicial definido no main (800, 600)
-    float aspect = 800.0f / 600.0f;
-
-    // 1. Configurar ProjectionMatrix1 (Ortográfica)
-    // Ajustamos a largura (left/right) baseada no aspect ratio
-    float orthoSize = 2.0f;
-    ProjectionMatrix1 = glm::ortho(-orthoSize * aspect, orthoSize * aspect,
-        -orthoSize, orthoSize,
-        1.0f, 10.0f);
-
-    // 2. Configurar ProjectionMatrix2 (Perspetiva)
-    ProjectionMatrix2 = glm::perspective(glm::radians(30.0f), aspect, 1.0f, 10.0f);
-
-
-    // --- Lógica de View / Posição (Igual ao que tinhas) ---
-
-    // Definir posição inicial das câmaras
-    glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
-    glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
-
-    // Calcular radius (distância ao target)
+    // --- SETUP CAM 1 ---
+    glm::vec3 eye1(5.0f, 5.0f, 5.0f);
     cam1.radius = glm::length(eye1);
-    cam2.radius = glm::length(eye2);
-
-    // Calcular quaternion olhando para o target (0,0,0)
     cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
-    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
-
-    // Inicializar viewMatrix das câmeras
     cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
-    cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
+    cam1.isOrtho = false;
 
-    // Definir câmara ativa
+    // --- SETUP CAM 2 ---
+    glm::vec3 eye2(-5.0f, -5.0f, -5.0f);
+    cam2.radius = glm::length(eye2);
+    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
+    cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
+    cam2.isOrtho = false;
+
+    calculateProjection(cam1, 800, 600);
+    calculateProjection(cam2, 800, 600);
+
     activeCam = &cam1;
     Camera->setViewMatrix(activeCam->viewMatrix);
-
-    // Aplica a matriz de perspetiva que acabámos de calcular
-    Camera->setProjectionMatrix(ProjectionMatrix2);
+    Camera->setProjectionMatrix(activeCam->projectionMatrix);
 }
 
 /////////////////////////////////////////////////////////////////////////// DRAW
@@ -274,7 +243,7 @@ void MyApp::drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float 
 }
 
 void MyApp::drawScene() {
-    root->draw(); // delega tudo para o scene graph
+    root->draw();
 }
 
 
@@ -289,6 +258,19 @@ void MyApp::updateCamera() {
     Camera->setViewMatrix(activeCam->viewMatrix);
 }
 
+void MyApp::calculateProjection(CameraInfo& cam, int width, int height) {
+    float aspect = (float)width / (float)height;
+    if (height == 0) aspect = 1.0f;
+
+    if (cam.isOrtho) {
+        float orthoSize = 2.0f;
+        cam.projectionMatrix = glm::ortho(-orthoSize * aspect, orthoSize * aspect, -orthoSize, orthoSize, 1.0f, 50.0f);
+    }
+    else {
+        cam.projectionMatrix = glm::perspective(glm::radians(30.0f), aspect, 1.0f, 50.0f);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
@@ -299,28 +281,11 @@ void MyApp::initCallback(GLFWwindow *win) {
 }
 
 void MyApp::windowSizeCallback(GLFWwindow* win, int width, int height) {
-    // 1. Evitar divisão por zero (se a altura for 0, o programa cracha)
-    if (height == 0) height = 1;
-
-    // 2. Atualizar o viewport do OpenGL
     glViewport(0, 0, width, height);
-
-    // 3. Calcular o novo Aspect Ratio
-    float aspect = (float)width / (float)height;
-
-    // 4. Atualizar Matriz Perspetiva
-    // Mantemos o FOV (30 graus), Near e Far. Só mudamos o aspect.
-    ProjectionMatrix2 = glm::perspective(glm::radians(30.0f), aspect, 1.0f, 10.0f);
-
-    // 5. Atualizar Matriz Ortográfica
-    // Para não esticar, definimos uma altura fixa (-2 a 2 = tamanho 4)
-    // E ajustamos a largura multiplicando pelo aspect ratio.
-    float orthoSize = 2.0f;
-    ProjectionMatrix1 = glm::ortho(-orthoSize * aspect, orthoSize * aspect, -orthoSize, orthoSize, 1.0f, 10.0f);
-
-    // 6. Enviar a matriz correta para a câmara imediatamente
-    if (Camera) {
-        Camera->setProjectionMatrix(useOrtho ? ProjectionMatrix1 : ProjectionMatrix2);
+    calculateProjection(cam1, width, height);
+    calculateProjection(cam2, width, height);
+    if (Camera && activeCam) {
+        Camera->setProjectionMatrix(activeCam->projectionMatrix);
     }
 }
 
@@ -331,20 +296,24 @@ void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 
     switch (key) {
 
-    case GLFW_KEY_P:
-        useOrtho = !useOrtho;
-        Camera->setProjectionMatrix(useOrtho ? ProjectionMatrix1 : ProjectionMatrix2);
-        break;
-
     case GLFW_KEY_C:
-        if (activeCam == &cam1)
-            activeCam = &cam2;
-        else
-            activeCam = &cam1;
+        activeCam = (activeCam == &cam1) ? &cam2 : &cam1;
 
         Camera->setViewMatrix(activeCam->viewMatrix);
+        Camera->setProjectionMatrix(activeCam->projectionMatrix);
+
+        std::cout << "Camera: " << (activeCam == &cam1 ? "1" : "2") << std::endl;
         break;
 
+    case GLFW_KEY_P:
+        activeCam->isOrtho = !activeCam->isOrtho;
+        int w, h;
+        glfwGetWindowSize(win, &w, &h);
+        calculateProjection(*activeCam, w, h);
+        Camera->setProjectionMatrix(activeCam->projectionMatrix);
+
+        //std::cout << "Projection: " << (activeCam->isOrtho ? "Ortho" : "Perspective") << std::endl;
+        break;
 
     default:
         break;
