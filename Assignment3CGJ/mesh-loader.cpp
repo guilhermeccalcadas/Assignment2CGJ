@@ -152,9 +152,8 @@ void MyApp::createShaderPrograms() {
         Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
     }
 
-    // Uniforms
-    Shaders->addUniform(mgl::MODEL_MATRIX); // matriz de modelo
-    Shaders->addUniform("uColor");           // nova cor base da peça
+    Shaders->addUniform(mgl::MODEL_MATRIX);
+    Shaders->addUniform("uColor");
     Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
 
     Shaders->create();
@@ -204,42 +203,42 @@ void MyApp::createSceneGraph() {
     root->addChild(tableNode);
 
     // Peça 0 - Triangle 1
-    TangramPiece* p0 = new TangramPiece(MeshesList[0], glm::vec4(1, 0, 0, 1.0f));
+    TangramPiece* p0 = new TangramPiece(MeshesList[0], glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     auto n0 = new mgl::SceneNode(p0, Shaders);
     n0->transform = getModel(squareConfig[0].pos, squareConfig[0].rotX, squareConfig[0].rotY, squareConfig[0].rotZ, 1.0f);
     tableNode->addChild(n0);
     nodes.push_back(n0);
 
     // Peça 1 - Triangle 2
-    TangramPiece* p1 = new TangramPiece(MeshesList[1], glm::vec4(0, 1, 0, 1.0f));
+    TangramPiece* p1 = new TangramPiece(MeshesList[1], glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
     auto n1 = new mgl::SceneNode(p1, Shaders);
     n1->transform = getModel(squareConfig[1].pos, squareConfig[1].rotX, squareConfig[1].rotY, squareConfig[1].rotZ, 1.0f);
     tableNode->addChild(n1);
     nodes.push_back(n1);
 
     // Peça 2 - Triangle 4
-    TangramPiece* p2 = new TangramPiece(MeshesList[2], glm::vec4(0, 0, 1, 1.0f));
+    TangramPiece* p2 = new TangramPiece(MeshesList[2], glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
     auto n2 = new mgl::SceneNode(p2, Shaders);
     n2->transform = getModel(squareConfig[2].pos, squareConfig[2].rotX, squareConfig[2].rotY, squareConfig[2].rotZ, 1.0f);
     tableNode->addChild(n2);
     nodes.push_back(n2);
 
     // Peça 3 - Triangle 6
-    TangramPiece* p3 = new TangramPiece(MeshesList[3], glm::vec4(1, 1, 0, 1.0f));
+    TangramPiece* p3 = new TangramPiece(MeshesList[3], glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
     auto n3 = new mgl::SceneNode(p3, Shaders);
     n3->transform = getModel(squareConfig[3].pos, squareConfig[3].rotX, squareConfig[3].rotY, squareConfig[3].rotZ, 1.0f);
     tableNode->addChild(n3);
     nodes.push_back(n3);
 
     // Peça 4 - Triangle 7
-    TangramPiece* p4 = new TangramPiece(MeshesList[4], glm::vec4(1, 0, 1, 1.0f));
+    TangramPiece* p4 = new TangramPiece(MeshesList[4], glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
     auto n4 = new mgl::SceneNode(p4, Shaders);
     n4->transform = getModel(squareConfig[4].pos, squareConfig[4].rotX, squareConfig[4].rotY, squareConfig[4].rotZ, 1.0f);
     tableNode->addChild(n4);
     nodes.push_back(n4);
 
     // Peça 5 - Paralelogram
-    TangramPiece* p5 = new TangramPiece(MeshesList[5], glm::vec4(0, 1, 1, 1.0f));
+    TangramPiece* p5 = new TangramPiece(MeshesList[5], glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
     auto n5 = new mgl::SceneNode(p5, Shaders);
     n5->transform = getModel(squareConfig[5].pos, squareConfig[5].rotX, squareConfig[5].rotY, squareConfig[5].rotZ, 1.0f);
     tableNode->addChild(n5);
