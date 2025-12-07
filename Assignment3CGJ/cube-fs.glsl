@@ -6,6 +6,8 @@ in vec3 exNormal;
 
 out vec4 FragmentColor;
 
+uniform vec3 uColor;
+
 vec3 constantColor(void) {
     return vec3(0.5);
 }
@@ -31,11 +33,13 @@ vec3 diffuseColor(void) {
 
 void main(void)
 {
-    vec3 color;
-    // color = constantColor();
-    // color = positionColor();
-    // color = uvColor();
-    color = normalColor();
-    // color = diffuseColor();
-    FragmentColor = vec4(color, 1.0);
+
+    vec3 N = normalize(exNormal);
+
+    float variation = 0.3 * (abs(N.x) + abs(N.y) + abs(N.z));
+
+
+    vec3 finalColor = clamp(uColor + variation, 0.0, 1.0);
+
+    FragmentColor = vec4(finalColor, 1.0);
 }

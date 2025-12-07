@@ -1,27 +1,37 @@
 #include "mglSceneNode.hpp"
-
-#include "mglMesh.hpp"
-#include "mglShader.hpp"
-#include "mglConventions.hpp"
-
-#include <GL/glew.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <algorithm>
+#include <glm/gtc/type_ptr.hpp>
+#include <GL/glew.h>
 
 namespace mgl {
 
     SceneNode::SceneNode()
-        : mesh_(nullptr), shader_(nullptr),
+        : piece_(nullptr),
+        shader_(nullptr),
         transform(glm::mat4(1.0f)) {
     }
 
-    SceneNode::SceneNode(Mesh* mesh, ShaderProgram* shader)
-        : mesh_(mesh), shader_(shader),
+    SceneNode::SceneNode(TangramPiece* piece, ShaderProgram* shader)
+        : piece_(piece),
+        shader_(shader),
         transform(glm::mat4(1.0f)) {
     }
 
-    void SceneNode::setMesh(Mesh* mesh) { mesh_ = mesh; }
-    void SceneNode::setShader(ShaderProgram* shader) { shader_ = shader; }
+    void SceneNode::setPiece(TangramPiece* piece) {
+        piece_ = piece;
+    }
+
+    void SceneNode::setShader(ShaderProgram* shader) {
+        shader_ = shader;
+    }
+
+    void SceneNode::setTransform(const glm::mat4& t) {
+        transform = t;
+    }
+
+    const glm::mat4& SceneNode::getTransform() const {
+        return transform;
+    }
 
     void SceneNode::addChild(SceneNode* child) {
         if (child) children_.push_back(child);
@@ -29,7 +39,8 @@ namespace mgl {
 
     void SceneNode::removeChild(SceneNode* child) {
         auto it = std::find(children_.begin(), children_.end(), child);
-        if (it != children_.end()) children_.erase(it);
+        if (it != children_.end())
+            children_.erase(it);
     }
 
     void SceneNode::draw() {
@@ -37,32 +48,38 @@ namespace mgl {
     }
 
     void SceneNode::draw(const glm::mat4& parentModel, ShaderProgram* inheritedShader) {
-        ShaderProgram* active = shader_ ? shader_ : inheritedShader;
+        ShaderProgram* activeShader = shader_ ? shader_ : inheritedShader;
         bool boundHere = false;
 
-        if (active && active != inheritedShader) {
-            active->bind();
+        // Se este nó tem shader próprio ? bind
+        if (activeShader && activeShader != inheritedShader) {
+            activeShader->bind();
             boundHere = true;
         }
 
-        glm::mat4 global = parentModel * transform;
+        glm::mat4 globalMatrix = parentModel * transform;
 
-        if (active && active->isUniform(mgl::MODEL_MATRIX)) {
-            GLint loc = active->Uniforms[mgl::MODEL_MATRIX].index;
-            if (loc >= 0)
-                glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(global));
+        // Uniform da matriz de modelo
+        if (activeShader && activeShader->isUniform("ModelMatrix")) {
+            GLint loc = activeShader->Uniforms["ModelMatrix"].index;
+            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(globalMatrix));
         }
 
-        if (mesh_)
-            mesh_->draw();
 
+        // Desenhar a peça associada a este nó
+        if (piece_) {
+            piece_->draw(activeShader);
+        }
+
+        // Desenhar os filhos
         for (auto child : children_) {
-            if (child)
-                child->draw(global, active);
+            child->draw(globalMatrix, activeShader);
         }
 
-        if (boundHere)
-            active->unbind();
+        // Desfazer bind se este nó tinha shader próprio
+        if (boundHere) {
+            activeShader->unbind();
+        }
     }
 
-} // namespace mgl
+}

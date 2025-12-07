@@ -45,6 +45,9 @@
     <ClCompile Include="..\libs\mgl\mglSceneNode.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="TangramPiece.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shape.h">
@@ -53,5 +56,13 @@
     <ClInclude Include="Triangle.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cube-fs.glsl">
+      <Filter>Arquivos de Origem</Filter>
+    </None>
+    <None Include="cube-vs.glsl">
+      <Filter>Arquivos de Origem</Filter>
+    </None>
   </ItemGroup>
 </Project>

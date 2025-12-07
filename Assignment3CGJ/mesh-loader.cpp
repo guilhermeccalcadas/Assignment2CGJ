@@ -137,27 +137,31 @@ void MyApp::createMeshes() {
 ///////////////////////////////////////////////////////////////////////// SHADER
 
 void MyApp::createShaderPrograms() {
-  Shaders = new mgl::ShaderProgram();
-  Shaders->addShader(GL_VERTEX_SHADER, "cube-vs.glsl");
-  Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
+    Shaders = new mgl::ShaderProgram();
+    Shaders->addShader(GL_VERTEX_SHADER, "cube-vs.glsl");
+    Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
 
-  Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-  if (Mesh->hasNormals()) {
-    Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
-  }
-  if (Mesh->hasTexcoords()) {
-    Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
-  }
-  if (Mesh->hasTangentsAndBitangents()) {
-    Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
-  }
+    Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
+    if (Mesh->hasNormals()) {
+        Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
+    }
+    if (Mesh->hasTexcoords()) {
+        Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
+    }
+    if (Mesh->hasTangentsAndBitangents()) {
+        Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
+    }
 
-  Shaders->addUniform(mgl::MODEL_MATRIX);
-  Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
-  Shaders->create();
+    // Uniforms
+    Shaders->addUniform(mgl::MODEL_MATRIX); // matriz de modelo
+    Shaders->addUniform("uColor");           // nova cor base da peça
+    Shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
 
-  ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
+    Shaders->create();
+
+    ModelMatrixId = Shaders->Uniforms[mgl::MODEL_MATRIX].index;
 }
+
 
 struct TransformationConfiguration {
     glm::vec3 pos;
@@ -192,45 +196,61 @@ TransformationConfiguration squareConfig[8] = { //SWITCH THE NAMES LATER
 
 void MyApp::createSceneGraph() {
     root = new mgl::SceneNode(nullptr, nullptr);
-    tableNode = new mgl::SceneNode(Mesh7, Shaders);
+
+    // Mesa
+    TangramPiece* tablePiece = new TangramPiece(Mesh7, glm::vec4(0.6f, 0.4f, 0.2f, 1.0f));
+    tableNode = new mgl::SceneNode(tablePiece, Shaders);
     tableNode->transform = glm::mat4(1.0f);
     root->addChild(tableNode);
 
-    auto n0 = new mgl::SceneNode(MeshesList[0], Shaders); //triangle 1
-    n0->transform =
-        getModel(squareConfig[0].pos, squareConfig[0].rotX, squareConfig[0].rotY, squareConfig[0].rotZ, 1.0f);
+    // Peça 0 - Triangle 1
+    TangramPiece* p0 = new TangramPiece(MeshesList[0], glm::vec4(1, 0, 0, 1.0f));
+    auto n0 = new mgl::SceneNode(p0, Shaders);
+    n0->transform = getModel(squareConfig[0].pos, squareConfig[0].rotX, squareConfig[0].rotY, squareConfig[0].rotZ, 1.0f);
     tableNode->addChild(n0);
     nodes.push_back(n0);
 
-    auto n1 = new mgl::SceneNode(MeshesList[1], Shaders); //triangle 2
-    n1->transform =
-        getModel(squareConfig[1].pos, squareConfig[1].rotX, squareConfig[1].rotY, squareConfig[1].rotZ, 1.0f);
-    tableNode->addChild(n1); nodes.push_back(n1);
+    // Peça 1 - Triangle 2
+    TangramPiece* p1 = new TangramPiece(MeshesList[1], glm::vec4(0, 1, 0, 1.0f));
+    auto n1 = new mgl::SceneNode(p1, Shaders);
+    n1->transform = getModel(squareConfig[1].pos, squareConfig[1].rotX, squareConfig[1].rotY, squareConfig[1].rotZ, 1.0f);
+    tableNode->addChild(n1);
+    nodes.push_back(n1);
 
-    auto n2 = new mgl::SceneNode(MeshesList[2], Shaders); //triangle 4
-    n2->transform =
-        getModel(squareConfig[2].pos, squareConfig[2].rotX, squareConfig[2].rotY, squareConfig[2].rotZ, 1.0f);
-    tableNode->addChild(n2); nodes.push_back(n2);
+    // Peça 2 - Triangle 4
+    TangramPiece* p2 = new TangramPiece(MeshesList[2], glm::vec4(0, 0, 1, 1.0f));
+    auto n2 = new mgl::SceneNode(p2, Shaders);
+    n2->transform = getModel(squareConfig[2].pos, squareConfig[2].rotX, squareConfig[2].rotY, squareConfig[2].rotZ, 1.0f);
+    tableNode->addChild(n2);
+    nodes.push_back(n2);
 
-    auto n3 = new mgl::SceneNode(MeshesList[3], Shaders); //triangle 6
-    n3->transform =
-        getModel(squareConfig[3].pos, squareConfig[3].rotX, squareConfig[3].rotY, squareConfig[3].rotZ, 1.0f);
-    tableNode->addChild(n3); nodes.push_back(n3);
+    // Peça 3 - Triangle 6
+    TangramPiece* p3 = new TangramPiece(MeshesList[3], glm::vec4(1, 1, 0, 1.0f));
+    auto n3 = new mgl::SceneNode(p3, Shaders);
+    n3->transform = getModel(squareConfig[3].pos, squareConfig[3].rotX, squareConfig[3].rotY, squareConfig[3].rotZ, 1.0f);
+    tableNode->addChild(n3);
+    nodes.push_back(n3);
 
-    auto n4 = new mgl::SceneNode(MeshesList[4], Shaders); //triangle 7
-    n4->transform =
-        getModel(squareConfig[4].pos, squareConfig[4].rotX, squareConfig[4].rotY, squareConfig[4].rotZ, 1.0f);
-    tableNode->addChild(n4); nodes.push_back(n4);
+    // Peça 4 - Triangle 7
+    TangramPiece* p4 = new TangramPiece(MeshesList[4], glm::vec4(1, 0, 1, 1.0f));
+    auto n4 = new mgl::SceneNode(p4, Shaders);
+    n4->transform = getModel(squareConfig[4].pos, squareConfig[4].rotX, squareConfig[4].rotY, squareConfig[4].rotZ, 1.0f);
+    tableNode->addChild(n4);
+    nodes.push_back(n4);
 
-    auto n5 = new mgl::SceneNode(MeshesList[5], Shaders); //paralellogram 3a
-    n5->transform =
-        getModel(squareConfig[5].pos, squareConfig[5].rotX, squareConfig[5].rotY, squareConfig[5].rotZ, 1.0f);
-    tableNode->addChild(n5); nodes.push_back(n5);
+    // Peça 5 - Paralelogram
+    TangramPiece* p5 = new TangramPiece(MeshesList[5], glm::vec4(0, 1, 1, 1.0f));
+    auto n5 = new mgl::SceneNode(p5, Shaders);
+    n5->transform = getModel(squareConfig[5].pos, squareConfig[5].rotX, squareConfig[5].rotY, squareConfig[5].rotZ, 1.0f);
+    tableNode->addChild(n5);
+    nodes.push_back(n5);
 
-    auto n7 = new mgl::SceneNode(MeshesList[7], Shaders); //square 5
-    n7->transform =
-        getModel(squareConfig[7].pos, squareConfig[7].rotX, squareConfig[7].rotY, squareConfig[7].rotZ, 1.0f);
-    tableNode->addChild(n7); nodes.push_back(n7);  
+    // Peça 7 - Quadrado
+    TangramPiece* p7 = new TangramPiece(MeshesList[7], glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
+    auto n7 = new mgl::SceneNode(p7, Shaders);
+    n7->transform = getModel(squareConfig[7].pos, squareConfig[7].rotX, squareConfig[7].rotY, squareConfig[7].rotZ, 1.0f);
+    tableNode->addChild(n7);
+    nodes.push_back(n7);
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA

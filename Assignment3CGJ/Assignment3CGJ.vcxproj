@@ -28,11 +28,16 @@
     <ClCompile Include="hello-3d-world.cpp" />
     <ClCompile Include="mesh-loader.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="TangramPiece.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Triangle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cube-fs.glsl" />
+    <None Include="cube-vs.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

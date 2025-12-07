@@ -1,5 +1,8 @@
-﻿  mesh-loader.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(327,38): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(369,24): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(370,26): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+﻿  TangramPiece.cpp
+  mesh-loader.cpp
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(173,20): warning C4305: 'inicializando': truncamento de 'double' para 'float'
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(383,38): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(425,24): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\mesh-loader.cpp(426,26): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+  Gerando Código...
   Assignment3CGJ.vcxproj -> C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\x64\Debug\Assignment3CGJ.exe
