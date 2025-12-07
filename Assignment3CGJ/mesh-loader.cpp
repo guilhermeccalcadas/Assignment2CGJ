@@ -70,7 +70,8 @@ private:
   mgl::SceneNode* tableNode = nullptr;
   std::vector<mgl::SceneNode*> nodes;
 
-
+  glm::mat4 ProjectionMatrix1;
+  glm::mat4 ProjectionMatrix2;
 
   void createMeshes();
   void createShaderPrograms();
@@ -86,35 +87,6 @@ private:
 
 void MyApp::createMeshes() {
   std::string mesh_dir = "./assets/models/";
-  // std::string mesh_file = "cube-v.obj";
-  // std::string mesh_file = "cube-vn-flat.obj";
-  // std::string mesh_file = "cube-vn-smooth.obj";
-  // std::string mesh_file = "cube-vt.obj";
-  // std::string mesh_file = "cube-vt2.obj";
-  // std::string mesh_file = "torus-vtn-flat.obj";
-  // std::string mesh_file = "torus-vtn-smooth.obj";
-  // std::string mesh_file = "suzanne-vtn-flat.obj";
-  // std::string mesh_file = "suzanne-vtn-smooth.obj";
-  // std::string mesh_file = "teapot-vn-flat.obj";
-  // std::string mesh_file = "teapot-vn-smooth.obj";
-  //std::string mesh_file = "bunny-vn-flat.obj";
-  // std::string mesh_file = "bunny-vn-smooth.obj";
-
-  /*
-  std::string mesh_file = "Triangle1.obj";
-  std::string mesh_file = "Triangle2.obj";
-  std::string mesh_file = "Triangle4.obj";
-  std::string mesh_file = "Triangle6.obj";
-  std::string mesh_file = "Triangle7.obj";
-  std::string mesh_file = "Cube5.obj";
-  std::string mesh_file = "Paralelogram3a.obj";
-  std::string mesh_file = "Table.obj";
-  std::string mesh_fullname = mesh_dir + mesh_file;
-
-  Mesh = new mgl::Mesh();
-  Mesh->joinIdenticalVertices();
-  Mesh->create(mesh_fullname);
-  */
   Mesh = new mgl::Mesh();
   Mesh->joinIdenticalVertices();
   Mesh->create(mesh_dir + "Triangle1.obj");
@@ -183,11 +155,9 @@ void MyApp::createShaderPrograms() {
 }
 
 void MyApp::createSceneGraph() {
-    root = new mgl::SceneNode(nullptr, nullptr);   // nó raiz vazio
-
-    // Nó da mesa — será o pai de tudo
+    root = new mgl::SceneNode(nullptr, nullptr);
     tableNode = new mgl::SceneNode(Mesh7, Shaders);
-    tableNode->transform = glm::mat4(1.0f); // mesa no centro
+    tableNode->transform = glm::mat4(1.0f);
     root->addChild(tableNode);
 
     auto n0 = new mgl::SceneNode(MeshesList[0], Shaders);
@@ -217,9 +187,7 @@ void MyApp::createSceneGraph() {
 
     auto n7 = new mgl::SceneNode(MeshesList[7], Shaders);
     n7->transform = getModel(glm::vec3(0.2225f, 0.5f, 0.0f), 90, 0, 0, 1.0f);
-    tableNode->addChild(n7); nodes.push_back(n7);
-    std::cout << "Created Scenegraph" << std::endl;
-    
+    tableNode->addChild(n7); nodes.push_back(n7);  
 }
 
 ///////////////////////////////////////////////////////////////////////// CAMERA
@@ -243,31 +211,47 @@ const glm::mat4 ProjectionMatrix2 =
     glm::perspective(glm::radians(30.0f), 640.0f / 480.0f, 1.0f, 10.0f);
 
 void MyApp::createCamera() {
-  Camera = new mgl::Camera(UBO_BP);
+    Camera = new mgl::Camera(UBO_BP);
 
-  // Definir posi��o inicial das c�meras
-  glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
-  glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
+    // --- NOVO: Inicializar as Matrizes de Projeção ---
+    // Usamos o tamanho inicial definido no main (800, 600)
+    float aspect = 800.0f / 600.0f;
 
-  // Calcular radius (dist�ncia ao target)
-  cam1.radius = glm::length(eye1);
-  cam2.radius = glm::length(eye2);
+    // 1. Configurar ProjectionMatrix1 (Ortográfica)
+    // Ajustamos a largura (left/right) baseada no aspect ratio
+    float orthoSize = 2.0f;
+    ProjectionMatrix1 = glm::ortho(-orthoSize * aspect, orthoSize * aspect,
+        -orthoSize, orthoSize,
+        1.0f, 10.0f);
 
-  // Calcular quaternion olhando para o target (0,0,0)
-  cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
-  cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
+    // 2. Configurar ProjectionMatrix2 (Perspetiva)
+    ProjectionMatrix2 = glm::perspective(glm::radians(30.0f), aspect, 1.0f, 10.0f);
 
-  // Inicializar viewMatrix das c�meras
-  cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
-  cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
 
-  // Definir c�mera ativa
-  activeCam = &cam1;
-  Camera->setViewMatrix(activeCam->viewMatrix);
-  Camera->setProjectionMatrix(ProjectionMatrix2);
+    // --- Lógica de View / Posição (Igual ao que tinhas) ---
 
-  //Camera->setViewMatrix(ViewMatrix1);
-  //Camera->setProjectionMatrix(ProjectionMatrix2);
+    // Definir posição inicial das câmaras
+    glm::vec3 eye1 = glm::vec3(5.0f, 5.0f, 5.0f);
+    glm::vec3 eye2 = glm::vec3(-5.0f, -5.0f, -5.0f);
+
+    // Calcular radius (distância ao target)
+    cam1.radius = glm::length(eye1);
+    cam2.radius = glm::length(eye2);
+
+    // Calcular quaternion olhando para o target (0,0,0)
+    cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
+    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
+
+    // Inicializar viewMatrix das câmeras
+    cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
+    cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
+
+    // Definir câmara ativa
+    activeCam = &cam1;
+    Camera->setViewMatrix(activeCam->viewMatrix);
+
+    // Aplica a matriz de perspetiva que acabámos de calcular
+    Camera->setProjectionMatrix(ProjectionMatrix2);
 }
 
 /////////////////////////////////////////////////////////////////////////// DRAW
@@ -314,9 +298,30 @@ void MyApp::initCallback(GLFWwindow *win) {
   createSceneGraph();
 }
 
-void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
-  glViewport(0, 0, winx, winy);
-  // change projection matrices to maintain aspect ratio
+void MyApp::windowSizeCallback(GLFWwindow* win, int width, int height) {
+    // 1. Evitar divisão por zero (se a altura for 0, o programa cracha)
+    if (height == 0) height = 1;
+
+    // 2. Atualizar o viewport do OpenGL
+    glViewport(0, 0, width, height);
+
+    // 3. Calcular o novo Aspect Ratio
+    float aspect = (float)width / (float)height;
+
+    // 4. Atualizar Matriz Perspetiva
+    // Mantemos o FOV (30 graus), Near e Far. Só mudamos o aspect.
+    ProjectionMatrix2 = glm::perspective(glm::radians(30.0f), aspect, 1.0f, 10.0f);
+
+    // 5. Atualizar Matriz Ortográfica
+    // Para não esticar, definimos uma altura fixa (-2 a 2 = tamanho 4)
+    // E ajustamos a largura multiplicando pelo aspect ratio.
+    float orthoSize = 2.0f;
+    ProjectionMatrix1 = glm::ortho(-orthoSize * aspect, orthoSize * aspect, -orthoSize, orthoSize, 1.0f, 10.0f);
+
+    // 6. Enviar a matriz correta para a câmara imediatamente
+    if (Camera) {
+        Camera->setProjectionMatrix(useOrtho ? ProjectionMatrix1 : ProjectionMatrix2);
+    }
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
