@@ -45,6 +45,8 @@ private:
   glm::vec3 target = glm::vec3(0.0f);
 
   bool rightMousePressed = false;
+  bool leftMousePressed = false;
+  float panSpeed = 0.01f;
   double lastCameraPosX = 0.0f;
   double lastCameraPosY = 0.0f;
   float rotationSpeed = 0.006f;
@@ -365,10 +367,20 @@ void MyApp::mouseButtonCallback(GLFWwindow* win, int button, int action, int mod
             rightMousePressed = false;
         }
     }
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            leftMousePressed = true;
+            glfwGetCursorPos(win, &lastCameraPosX, &lastCameraPosY);
+        }
+        else if (action == GLFW_RELEASE) {
+            leftMousePressed = false;
+        }
+    }
 }
 
 void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
-    if (!rightMousePressed) {
+    if (!rightMousePressed && !leftMousePressed) {
         lastCameraPosX = xpos;
         lastCameraPosY = ypos;
         return;
@@ -376,20 +388,30 @@ void MyApp::cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 
     double distanceX = xpos - lastCameraPosX;
     double distanceY = ypos - lastCameraPosY;
-    float yawAngle = -distanceX * rotationSpeed;
-    float pitchAngle = -distanceY * rotationSpeed;
 
-    glm::vec3 localUp = activeCam->rotation * glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::quat yaw = glm::angleAxis(yawAngle, glm::normalize(localUp));
-    glm::vec3 localRight = activeCam->rotation * glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::quat pitch = glm::angleAxis(pitchAngle, glm::normalize(localRight));
+    if (rightMousePressed) {
+        float yawAngle = -distanceX * rotationSpeed;
+        float pitchAngle = -distanceY * rotationSpeed;
 
-    // Apply yaw and pitch to the current rotation
-    glm::quat orientation = glm::normalize(pitch * yaw * activeCam->rotation);
+        glm::vec3 localUp = activeCam->rotation * glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::quat yaw = glm::angleAxis(yawAngle, glm::normalize(localUp));
+        glm::vec3 localRight = activeCam->rotation * glm::vec3(1.0f, 0.0f, 0.0f);
+        glm::quat pitch = glm::angleAxis(pitchAngle, glm::normalize(localRight));
 
-    activeCam->rotation = orientation;
-    updateCamera();
+        glm::quat orientation = glm::normalize(pitch * yaw * activeCam->rotation);
+        activeCam->rotation = orientation;
 
+        updateCamera();
+    }
+
+    else if (leftMousePressed) {
+        glm::vec3 camRight = activeCam->rotation * glm::vec3(1.0f, 0.0f, 0.0f);
+        glm::vec3 camFront = activeCam->rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 translation = (camRight * (float)distanceX * panSpeed) +
+            (camFront * (float)-distanceY * panSpeed);
+
+        tableNode->transform = glm::translate(glm::mat4(1.0f), translation) * tableNode->transform;
+    }
     lastCameraPosX = xpos;
     lastCameraPosY = ypos;
 }
