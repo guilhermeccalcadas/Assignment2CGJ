@@ -27,8 +27,6 @@ public:
   void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
 
 private:
-
-
   // Camera control parameters
   mgl::Camera* Camera = nullptr;
   const float zoomSpeed = 1.0f;
@@ -147,7 +145,7 @@ struct TransformationConfiguration {
     float rotZ;
 };
 
-const float SIDE = 0.89; //length of a side of the pickagram in square form
+const float SIDE = 0.89f; //length of a side of the pickagram in square form
 
 TransformationConfiguration sealConfig[7] = {
     { glm::vec3(0.4232f, 0.8375f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
