@@ -86,6 +86,12 @@ private:
   void drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
   void createSceneGraph();
   static void calculateProjection(CameraInfo& cam, int width, int height);
+
+  void updatePieceTransforms(float dt);
+
+  float t = 0.0f; // 0 = square, 1 = seal
+  float animSpeed = 0.5f; // velocidade da animação
+  int animDirection = 0; // -1 = voltar, +1 = avançar, 0 = parado
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -116,13 +122,15 @@ void MyApp::createMeshes() {
   Mesh6->joinIdenticalVertices();
   Mesh6->create(mesh_dir + "Paralelogram3a.obj");
 
+  Mesh8 = new mgl::Mesh();
+  Mesh8->joinIdenticalVertices();
+  Mesh8->create(mesh_dir + "Cube5.obj");
+
   Mesh7 = new mgl::Mesh();
   Mesh7->joinIdenticalVertices();
   Mesh7->create(mesh_dir + "Table.obj");
 
-  Mesh8 = new mgl::Mesh();
-  Mesh8->joinIdenticalVertices();
-  Mesh8->create(mesh_dir + "Cube5.obj");
+
 
   MeshesList.push_back(Mesh);
   MeshesList.push_back(Mesh2);
@@ -171,25 +179,23 @@ struct TransformationConfiguration {
 
 const float SIDE = 0.89; //length of a side of the pickagram in square form
 
-TransformationConfiguration squareConfig[8] = {
+TransformationConfiguration sealConfig[7] = {
     { glm::vec3(0.4232f, 0.8375f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
     { glm::vec3(0.7628f, 0.8108f, 0.0f), 0.0f, 0.0f, 153.0f }, //triangle 2
     { glm::vec3(1.0905f, 0.8204f, 0.0f), 0.0f, 0.0f, 18.0f }, //triangle 4
     { glm::vec3(-0.0688f, 0.9116f, 0.0f), 0.0f, 0.0f, 198.0f }, //triangle 6
     { glm::vec3(0.0053f, 1.4036f, 0.0f), 0.0f, 0.0f, 18.0f }, // triangle 7
     { glm::vec3(-0.1402, 0.7714f, 0.0f), 0.0f, 0.0f, 288.0f }, //paralellogram 3a
-    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
     { glm::vec3(0.0741f, 1.1920f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
 };
 
-TransformationConfiguration sealConfig[8] = { //SWITCH THE NAMES LATER
+TransformationConfiguration squareConfig[7] = { //SWITCH THE NAMES LATER
     { glm::vec3(-SIDE / 2 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f }, //triangle 1
     { glm::vec3(-0.5f, 0.5f, -SIDE / 2), 90.0f, 0.0f, 0.0f }, //triangle 2
     { glm::vec3(-0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 4
     { glm::vec3(SIDE / 2 - 0.5f, 0.5f, -SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 6
     { glm::vec3(SIDE / 4 - 0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, // triangle 7
     { glm::vec3(-SIDE / 8 - 0.5f, 0.5f, SIDE / 4 + SIDE / 8), 90.0f, 0.0f, 0.0f }, //paralellogram 3a
-    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
     { glm::vec3(SIDE / 4 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, 0.0f } //square 5
 };
 
@@ -335,6 +341,26 @@ void MyApp::calculateProjection(CameraInfo& cam, int width, int height) {
     }
 }
 
+void MyApp::updatePieceTransforms(float dt) {
+    // atualizar t
+    t += animDirection * animSpeed * dt;
+    t = glm::clamp(t, 0.0f, 1.0f);
+
+    // atualizar transform de cada peça
+    for (int i = 0; i < nodes.size(); i++) {
+
+        glm::vec3 pos = glm::mix(squareConfig[i].pos,
+            sealConfig[i].pos, t);
+
+        float rotX = glm::mix(squareConfig[i].rotX, sealConfig[i].rotX, t);
+        float rotY = glm::mix(squareConfig[i].rotY, sealConfig[i].rotY, t);
+        float rotZ = glm::mix(squareConfig[i].rotZ, sealConfig[i].rotZ, t);
+
+        nodes[i]->transform = getModel(pos, rotX, rotY, rotZ, 1.0f);
+    }
+}
+
+
 ////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void MyApp::initCallback(GLFWwindow *win) {
@@ -353,11 +379,23 @@ void MyApp::windowSizeCallback(GLFWwindow* win, int width, int height) {
     }
 }
 
-void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
+void MyApp::displayCallback(GLFWwindow *win, double elapsed) { 
+    updatePieceTransforms(elapsed);
+    drawScene(); 
+}
 
 void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
-    if (action != GLFW_PRESS) return;
 
+    if (key == GLFW_KEY_RIGHT) {
+        if (action == GLFW_PRESS) animDirection = +1;
+        if (action == GLFW_RELEASE) animDirection = 0;
+    }
+
+    if (key == GLFW_KEY_LEFT) {
+        if (action == GLFW_PRESS) animDirection = -1;
+        if (action == GLFW_RELEASE) animDirection = 0;
+    }
+    if (action != GLFW_PRESS) return;
     switch (key) {
 
     case GLFW_KEY_C:
@@ -382,6 +420,8 @@ void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
     default:
         break;
     }
+
+
 }
 
 void MyApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
