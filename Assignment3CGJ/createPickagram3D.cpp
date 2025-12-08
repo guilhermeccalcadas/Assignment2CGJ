@@ -27,7 +27,10 @@ public:
   void cursorCallback(GLFWwindow* window, double xpos, double ypos) override;
 
 private:
+
+
   // Camera control parameters
+  mgl::Camera* Camera = nullptr;
   bool useOrtho = false;
   bool useCamera2 = false;
   float radius = 10.0f;
@@ -41,13 +44,12 @@ private:
       float radius;
       bool isOrtho;
   };
-
   CameraInfo cam1;
   CameraInfo cam2;
   CameraInfo* activeCam = nullptr;
+  glm::vec3 target = glm::vec3(0.0f, 0.5f, 0.0f);
 
-  glm::vec3 target = glm::vec3(0.0f);
-
+  // Mouse control parameters
   bool rightMousePressed = false;
   bool leftMousePressed = false;
   float panSpeed = 0.01f;
@@ -56,26 +58,25 @@ private:
   float rotationSpeed = 0.006f;
   float pitchLimit = glm::radians(89.0f);
 
+  // Shader program
   const GLuint UBO_BP = 0;
   mgl::ShaderProgram *Shaders = nullptr;
-  mgl::Camera *Camera = nullptr;
+
+  // Model matrix uniform location
   GLint ModelMatrixId;
-  mgl::Mesh *Mesh = nullptr;
-  mgl::Mesh* Mesh2 = nullptr;
-  mgl::Mesh* Mesh3 = nullptr;
-  mgl::Mesh* Mesh4 = nullptr;
-  mgl::Mesh* Mesh5 = nullptr;
-  mgl::Mesh* Mesh6 = nullptr;
-  mgl::Mesh* Mesh7 = nullptr;
-  mgl::Mesh* Mesh8 = nullptr;
+
+  // Meshes
   std::vector<mgl::Mesh*> MeshesList;
 
+  // Scene Graph
   mgl::SceneNode* root = nullptr;
   mgl::SceneNode* tableNode = nullptr;
   std::vector<mgl::SceneNode*> nodes;
 
-  glm::mat4 ProjectionMatrix1;
-  glm::mat4 ProjectionMatrix2;
+  // Animation parameters
+  float t = 0.0f;
+  float animSpeed = 0.5f;
+  int animDirection = 0;
 
   void createMeshes();
   void createShaderPrograms();
@@ -89,58 +90,33 @@ private:
 
   void updatePieceTransforms(float dt);
 
-  float t = 0.0f; // 0 = square, 1 = seal
-  float animSpeed = 0.5f; // velocidade da animação
-  int animDirection = 0; // -1 = voltar, +1 = avançar, 0 = parado
+
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
 
 void MyApp::createMeshes() {
-  std::string mesh_dir = "./assets/models/";
-  Mesh = new mgl::Mesh();
-  Mesh->joinIdenticalVertices();
-  Mesh->create(mesh_dir + "Triangle1.obj");
+    std::string mesh_dir = "./assets/models/";
 
-  Mesh2 = new mgl::Mesh();
-  Mesh2->joinIdenticalVertices();
-  Mesh2->create(mesh_dir + "Triangle2.obj");
+    std::vector<std::string> files = {
+        "Table.obj",
+        "Triangle1.obj",
+        "Triangle2.obj",
+        "Triangle4.obj",
+        "Triangle6.obj",
+        "Triangle7.obj",
+        "Paralelogram3a.obj",
+        "Cube5.obj"
+    };
 
-  Mesh3 = new mgl::Mesh();
-  Mesh3->joinIdenticalVertices();
-  Mesh3->create(mesh_dir + "Triangle4.obj");
-
-  Mesh4 = new mgl::Mesh();
-  Mesh4->joinIdenticalVertices();
-  Mesh4->create(mesh_dir + "Triangle6.obj");
-
-  Mesh5 = new mgl::Mesh();
-  Mesh5->joinIdenticalVertices();
-  Mesh5->create(mesh_dir + "Triangle7.obj");
-
-  Mesh6 = new mgl::Mesh();
-  Mesh6->joinIdenticalVertices();
-  Mesh6->create(mesh_dir + "Paralelogram3a.obj");
-
-  Mesh8 = new mgl::Mesh();
-  Mesh8->joinIdenticalVertices();
-  Mesh8->create(mesh_dir + "Cube5.obj");
-
-  Mesh7 = new mgl::Mesh();
-  Mesh7->joinIdenticalVertices();
-  Mesh7->create(mesh_dir + "Table.obj");
-
-
-
-  MeshesList.push_back(Mesh);
-  MeshesList.push_back(Mesh2);
-  MeshesList.push_back(Mesh3);
-  MeshesList.push_back(Mesh4);
-  MeshesList.push_back(Mesh5);
-  MeshesList.push_back(Mesh6);
-  MeshesList.push_back(Mesh7);
-  MeshesList.push_back(Mesh8);
+    for (const auto& f : files) {
+        mgl::Mesh* m = new mgl::Mesh();
+        m->joinIdenticalVertices();
+        m->create(mesh_dir + f);
+        MeshesList.push_back(m);
+    }
 }
+
 
 ///////////////////////////////////////////////////////////////////////// SHADER
 
@@ -150,13 +126,13 @@ void MyApp::createShaderPrograms() {
     Shaders->addShader(GL_FRAGMENT_SHADER, "cube-fs.glsl");
 
     Shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-    if (Mesh->hasNormals()) {
+    if (MeshesList[0]->hasNormals()) {
         Shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
     }
-    if (Mesh->hasTexcoords()) {
+    if (MeshesList[0]->hasTexcoords()) {
         Shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
     }
-    if (Mesh->hasTangentsAndBitangents()) {
+    if (MeshesList[0]->hasTangentsAndBitangents()) {
         Shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
     }
 
@@ -203,48 +179,48 @@ void MyApp::createSceneGraph() {
     root = new mgl::SceneNode(nullptr, nullptr);
 
     // Mesa
-    TangramPiece* tablePiece = new TangramPiece(Mesh7, glm::vec4(0.6f, 0.4f, 0.2f, 1.0f));
+    TangramPiece* tablePiece = new TangramPiece(MeshesList[0], glm::vec4(0.6f, 0.4f, 0.2f, 1.0f));
     tableNode = new mgl::SceneNode(tablePiece, Shaders);
     tableNode->transform = glm::mat4(1.0f);
     root->addChild(tableNode);
 
     // Peça 0 - Triangle 1
-    TangramPiece* p0 = new TangramPiece(MeshesList[0], glm::vec4(0.9f, 0.1f, 0.1f, 1.0f));
+    TangramPiece* p0 = new TangramPiece(MeshesList[1], glm::vec4(0.9f, 0.1f, 0.1f, 1.0f));
     auto n0 = new mgl::SceneNode(p0, Shaders);
     n0->transform = getModel(squareConfig[0].pos, squareConfig[0].rotX, squareConfig[0].rotY, squareConfig[0].rotZ, 1.0f);
     tableNode->addChild(n0);
     nodes.push_back(n0);
 
     // Peça 1 - Triangle 2
-    TangramPiece* p1 = new TangramPiece(MeshesList[1], glm::vec4(0.1f, 0.9f, 0.1f, 1.0f));
+    TangramPiece* p1 = new TangramPiece(MeshesList[2], glm::vec4(0.1f, 0.9f, 0.1f, 1.0f));
     auto n1 = new mgl::SceneNode(p1, Shaders);
     n1->transform = getModel(squareConfig[1].pos, squareConfig[1].rotX, squareConfig[1].rotY, squareConfig[1].rotZ, 1.0f);
     tableNode->addChild(n1);
     nodes.push_back(n1);
 
     // Peça 2 - Triangle 4
-    TangramPiece* p2 = new TangramPiece(MeshesList[2], glm::vec4(0.1f, 0.1f, 0.9f, 1.0f));
+    TangramPiece* p2 = new TangramPiece(MeshesList[3], glm::vec4(0.1f, 0.1f, 0.9f, 1.0f));
     auto n2 = new mgl::SceneNode(p2, Shaders);
     n2->transform = getModel(squareConfig[2].pos, squareConfig[2].rotX, squareConfig[2].rotY, squareConfig[2].rotZ, 1.0f);
     tableNode->addChild(n2);
     nodes.push_back(n2);
 
     // Peça 3 - Triangle 6
-    TangramPiece* p3 = new TangramPiece(MeshesList[3], glm::vec4(0.9f, 0.9f, 0.1f, 1.0f));
+    TangramPiece* p3 = new TangramPiece(MeshesList[4], glm::vec4(0.9f, 0.9f, 0.1f, 1.0f));
     auto n3 = new mgl::SceneNode(p3, Shaders);
     n3->transform = getModel(squareConfig[3].pos, squareConfig[3].rotX, squareConfig[3].rotY, squareConfig[3].rotZ, 1.0f);
     tableNode->addChild(n3);
     nodes.push_back(n3);
 
     // Peça 4 - Triangle 7
-    TangramPiece* p4 = new TangramPiece(MeshesList[4], glm::vec4(0.9f, 0.1f, 0.9f, 1.0f));
+    TangramPiece* p4 = new TangramPiece(MeshesList[5], glm::vec4(0.9f, 0.1f, 0.9f, 1.0f));
     auto n4 = new mgl::SceneNode(p4, Shaders);
     n4->transform = getModel(squareConfig[4].pos, squareConfig[4].rotX, squareConfig[4].rotY, squareConfig[4].rotZ, 1.0f);
     tableNode->addChild(n4);
     nodes.push_back(n4);
 
     // Peça 5 - Paralelogram
-    TangramPiece* p5 = new TangramPiece(MeshesList[5], glm::vec4(0.1f, 0.9f, 0.9f, 1.0f));
+    TangramPiece* p5 = new TangramPiece(MeshesList[6], glm::vec4(0.1f, 0.9f, 0.9f, 1.0f));
     auto n5 = new mgl::SceneNode(p5, Shaders);
     n5->transform = getModel(squareConfig[5].pos, squareConfig[5].rotX, squareConfig[5].rotY, squareConfig[5].rotZ, 1.0f);
     tableNode->addChild(n5);
@@ -253,7 +229,7 @@ void MyApp::createSceneGraph() {
     // Peça 7 - Quadrado
     TangramPiece* p7 = new TangramPiece(MeshesList[7], glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
     auto n7 = new mgl::SceneNode(p7, Shaders);
-    n7->transform = getModel(squareConfig[7].pos, squareConfig[7].rotX, squareConfig[7].rotY, squareConfig[7].rotZ, 1.0f);
+    n7->transform = getModel(squareConfig[6].pos, squareConfig[6].rotX, squareConfig[6].rotY, squareConfig[6].rotZ, 1.0f);
     tableNode->addChild(n7);
     nodes.push_back(n7);
 }
@@ -263,25 +239,25 @@ void MyApp::createSceneGraph() {
 
 void MyApp::createCamera() {
     Camera = new mgl::Camera(UBO_BP);
-    glm::vec3 target1(0.0f, 0.0f, 0.0f);
-    
-    
-    // --- SETUP CAM 1: topo olhando para baixo ---
-    glm::vec3 eye1(0.0f, 10.0f, 0.0f);
-    glm::vec3 up1(0.0f, 0.0f, -1.0f); // Up não paralelo à direção
 
-    cam1.radius = glm::length(eye1 - target1);
-    cam1.rotation = glm::quatLookAt(glm::normalize(target1 - eye1), up1);
-    cam1.viewMatrix = glm::lookAt(eye1, target1, up1);
+    
+    
+    // --- SETUP CAM 1 ---
+    glm::vec3 eye1(0.0f, 10.0f, 0.0f);
+    glm::vec3 up1(0.0f, 0.0f, -1.0f);
+
+    cam1.radius = glm::length(eye1 - target);
+    cam1.rotation = glm::quatLookAt(glm::normalize(target - eye1), up1);
+    cam1.viewMatrix = glm::lookAt(eye1, target, up1);
     cam1.isOrtho = false;
 
-    // --- SETUP CAM 2: normal ---
+    // --- SETUP CAM 2 ---
     glm::vec3 eye2(-5.0f, 2.0f, -5.0f);
     glm::vec3 up2(0.0f, 1.0f, 0.0f);
 
     cam2.radius = glm::length(eye2);
     cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), up2);
-    cam2.viewMatrix = glm::lookAt(eye2, target1, up2);
+    cam2.viewMatrix = glm::lookAt(eye2, target, up2);
     cam2.isOrtho = false;
 
     calculateProjection(cam1, 800, 600);
@@ -342,11 +318,9 @@ void MyApp::calculateProjection(CameraInfo& cam, int width, int height) {
 }
 
 void MyApp::updatePieceTransforms(float dt) {
-    // atualizar t
     t += animDirection * animSpeed * dt;
     t = glm::clamp(t, 0.0f, 1.0f);
 
-    // atualizar transform de cada peça
     for (int i = 0; i < nodes.size(); i++) {
 
         glm::vec3 pos = glm::mix(squareConfig[i].pos,
@@ -365,7 +339,7 @@ void MyApp::updatePieceTransforms(float dt) {
 
 void MyApp::initCallback(GLFWwindow *win) {
   createMeshes();
-  createShaderPrograms(); // after mesh;
+  createShaderPrograms();
   createCamera();
   createSceneGraph();
 }
@@ -500,7 +474,7 @@ int main(int argc, char *argv[]) {
   mgl::Engine &engine = mgl::Engine::getInstance();
   engine.setApp(new MyApp());
   engine.setOpenGL(4, 6);
-  engine.setWindow(800, 600, "Mesh Loader", 0, 1);
+  engine.setWindow(800, 600, "Create Pickagram 3D", 0, 1);
   engine.init();
   engine.run();
   exit(EXIT_SUCCESS);

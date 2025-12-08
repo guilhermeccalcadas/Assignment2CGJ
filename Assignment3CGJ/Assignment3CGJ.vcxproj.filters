@@ -27,10 +27,7 @@
     <ClCompile Include="..\libs\mgl\mglShader.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="hello-3d-world.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh-loader.cpp">
+    <ClCompile Include="createPickagram3D.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="..\libs\mgl\mglMesh.cpp">

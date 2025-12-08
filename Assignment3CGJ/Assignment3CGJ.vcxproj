@@ -25,8 +25,7 @@
     <ClCompile Include="..\libs\mgl\mglMesh.cpp" />
     <ClCompile Include="..\libs\mgl\mglSceneNode.cpp" />
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
-    <ClCompile Include="hello-3d-world.cpp" />
-    <ClCompile Include="mesh-loader.cpp" />
+    <ClCompile Include="createPickagram3D.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="TangramPiece.cpp" />
     <ClCompile Include="Triangle.cpp" />
