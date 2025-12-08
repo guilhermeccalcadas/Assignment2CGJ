@@ -172,14 +172,14 @@ struct TransformationConfiguration {
 const float SIDE = 0.89; //length of a side of the pickagram in square form
 
 TransformationConfiguration sealConfig[8] = {
-    { glm::vec3(0.5f, 0.8f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
-    { glm::vec3(0.9f, 0.8f, 0.0f), 0.0f, 0.0f, 153.0f }, //triangle 2
-    { glm::vec3(1.2f, 0.8f, 0.0f), 0.0f, 0.0f, 18.0f }, //triangle 4
-    { glm::vec3(0.0f, 0.6f, 0.0f), 0.0f, 0.0f, 198.0f }, //triangle 6
-    { glm::vec3(0.2f, 1.2f, 0.0f), 0.0f, 0.0f, 18.0f }, // triangle 7
-    { glm::vec3(0.0f, 0.3f, 0.0f), 0.0f, 0.0f, 288.0f }, //paralellogram 3a
+    { glm::vec3(0.4232f, 0.8375f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
+    { glm::vec3(0.7628f, 0.8108f, 0.0f), 0.0f, 0.0f, 153.0f }, //triangle 2
+    { glm::vec3(1.0905f, 0.8204f, 0.0f), 0.0f, 0.0f, 18.0f }, //triangle 4
+    { glm::vec3(-0.0688f, 0.9116f, 0.0f), 0.0f, 0.0f, 198.0f }, //triangle 6
+    { glm::vec3(0.0053f, 1.4036f, 0.0f), 0.0f, 0.0f, 18.0f }, // triangle 7
+    { glm::vec3(-0.1402, 0.7714f, 0.0f), 0.0f, 0.0f, 288.0f }, //paralellogram 3a
     { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
-    { glm::vec3(-0.1f, 1.0f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
+    { glm::vec3(0.0741f, 1.1920f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
 };
 
 TransformationConfiguration squareConfig[8] = { //SWITCH THE NAMES LATER
