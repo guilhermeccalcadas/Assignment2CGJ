@@ -6,21 +6,21 @@ layout(location = 3) in vec2 inTexcoord;
 
 out vec3 exPosition;
 out vec2 exTexcoord;
-out vec3 exNormal;
+flat out vec3 exNormal; // flat para manter a mesma normal por face
 
 uniform mat4 ModelMatrix;
 
 uniform Camera {
-   mat4 ViewMatrix;
-   mat4 ProjectionMatrix;
+    mat4 ViewMatrix;
+    mat4 ProjectionMatrix;
 };
 
 void main(void)
 {
-	exPosition = inPosition;
-	exNormal = inNormal;
-	exTexcoord = inTexcoord;
+    exPosition = inPosition;
+    exNormal = inNormal; // a normal "flat" por face
+    exTexcoord = inTexcoord;
 
-	vec4 MCPosition = vec4(inPosition, 1.0);
-	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
+    vec4 MCPosition = vec4(inPosition, 1.0);
+    gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * MCPosition;
 }
