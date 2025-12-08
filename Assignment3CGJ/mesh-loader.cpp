@@ -257,19 +257,25 @@ void MyApp::createSceneGraph() {
 
 void MyApp::createCamera() {
     Camera = new mgl::Camera(UBO_BP);
+    glm::vec3 target1(0.0f, 0.0f, 0.0f);
+    
+    
+    // --- SETUP CAM 1: topo olhando para baixo ---
+    glm::vec3 eye1(0.0f, 10.0f, 0.0f);
+    glm::vec3 up1(0.0f, 0.0f, -1.0f); // Up não paralelo à direção
 
-    // --- SETUP CAM 1 ---
-    glm::vec3 eye1(5.0f, 5.0f, 5.0f);
-    cam1.radius = glm::length(eye1);
-    cam1.rotation = glm::quatLookAt(glm::normalize(-eye1), glm::vec3(0, 1, 0));
-    cam1.viewMatrix = glm::lookAt(eye1, target, glm::vec3(0, 1, 0));
+    cam1.radius = glm::length(eye1 - target1);
+    cam1.rotation = glm::quatLookAt(glm::normalize(target1 - eye1), up1);
+    cam1.viewMatrix = glm::lookAt(eye1, target1, up1);
     cam1.isOrtho = false;
 
-    // --- SETUP CAM 2 ---
-    glm::vec3 eye2(-5.0f, -5.0f, -5.0f);
+    // --- SETUP CAM 2: normal ---
+    glm::vec3 eye2(-5.0f, 2.0f, -5.0f);
+    glm::vec3 up2(0.0f, 1.0f, 0.0f);
+
     cam2.radius = glm::length(eye2);
-    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), glm::vec3(0, 1, 0));
-    cam2.viewMatrix = glm::lookAt(eye2, target, glm::vec3(0, 1, 0));
+    cam2.rotation = glm::quatLookAt(glm::normalize(-eye2), up2);
+    cam2.viewMatrix = glm::lookAt(eye2, target1, up2);
     cam2.isOrtho = false;
 
     calculateProjection(cam1, 800, 600);
@@ -279,6 +285,7 @@ void MyApp::createCamera() {
     Camera->setViewMatrix(activeCam->viewMatrix);
     Camera->setProjectionMatrix(activeCam->projectionMatrix);
 }
+
 
 /////////////////////////////////////////////////////////////////////////// DRAW
 
