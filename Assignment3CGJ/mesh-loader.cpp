@@ -54,7 +54,15 @@ private:
   double lastCameraPosX = 0.0f;
   double lastCameraPosY = 0.0f;
   float rotationSpeed = 0.006f;
-  float pitchLimit = glm::radians(89.0f);
+
+  bool leftArrowPressed = false;
+  bool rightArrowPressed = false;
+  float t = 0.0f;
+  float animationSpeed = 0.2f;
+  glm::vec3 currentPos[7];
+  glm::quat currentRot[7];
+  glm::vec3 targetPos[7];
+  glm::quat targetRot[7];
 
   const GLuint UBO_BP = 0;
   mgl::ShaderProgram *Shaders = nullptr;
@@ -171,25 +179,25 @@ struct TransformationConfiguration {
 
 const float SIDE = 0.89; //length of a side of the pickagram in square form
 
-TransformationConfiguration squareConfig[8] = {
+TransformationConfiguration sealConfig[7] = {
     { glm::vec3(0.4232f, 0.8375f, 0.0f), 0.0f, 0.0f, 108.0f }, //triangle 1
     { glm::vec3(0.7628f, 0.8108f, 0.0f), 0.0f, 0.0f, 153.0f }, //triangle 2
     { glm::vec3(1.0905f, 0.8204f, 0.0f), 0.0f, 0.0f, 18.0f }, //triangle 4
     { glm::vec3(-0.0688f, 0.9116f, 0.0f), 0.0f, 0.0f, 198.0f }, //triangle 6
     { glm::vec3(0.0053f, 1.4036f, 0.0f), 0.0f, 0.0f, 18.0f }, // triangle 7
     { glm::vec3(-0.1402, 0.7714f, 0.0f), 0.0f, 0.0f, 288.0f }, //paralellogram 3a
-    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
+    //{ glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
     { glm::vec3(0.0741f, 1.1920f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
 };
 
-TransformationConfiguration sealConfig[8] = { //SWITCH THE NAMES LATER
+TransformationConfiguration squareConfig[7] = {
     { glm::vec3(-SIDE / 2 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f }, //triangle 1
     { glm::vec3(-0.5f, 0.5f, -SIDE / 2), 90.0f, 0.0f, 0.0f }, //triangle 2
     { glm::vec3(-0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 4
     { glm::vec3(SIDE / 2 - 0.5f, 0.5f, -SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 6
     { glm::vec3(SIDE / 4 - 0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, // triangle 7
     { glm::vec3(-SIDE / 8 - 0.5f, 0.5f, SIDE / 4 + SIDE / 8), 90.0f, 0.0f, 0.0f }, //paralellogram 3a
-    { glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
+    //{ glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f }, //table
     { glm::vec3(SIDE / 4 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, 0.0f } //square 5
 };
 
@@ -247,7 +255,7 @@ void MyApp::createSceneGraph() {
     // Peça 7 - Quadrado
     TangramPiece* p7 = new TangramPiece(MeshesList[7], glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
     auto n7 = new mgl::SceneNode(p7, Shaders);
-    n7->transform = getModel(squareConfig[7].pos, squareConfig[7].rotX, squareConfig[7].rotY, squareConfig[7].rotZ, 1.0f);
+    n7->transform = getModel(squareConfig[6].pos, squareConfig[6].rotX, squareConfig[6].rotY, squareConfig[6].rotZ, 1.0f);
     tableNode->addChild(n7);
     nodes.push_back(n7);
 }
@@ -353,7 +361,31 @@ void MyApp::windowSizeCallback(GLFWwindow* win, int width, int height) {
     }
 }
 
-void MyApp::displayCallback(GLFWwindow *win, double elapsed) { drawScene(); }
+void MyApp::displayCallback(GLFWwindow *win, double elapsed) {
+    //drawScene();
+    if (rightArrowPressed) {
+        t += animationSpeed * elapsed;
+        if (t > 1.0f) t = 1.0f;
+    }
+    if (leftArrowPressed) {
+        t -= animationSpeed * elapsed;
+        if (t < 0.0f) t = 0.0f;
+    }
+
+    for (int i = 0; i < 7; i++) {
+        glm::quat q0 = glm::quat(glm::radians(glm::vec3(squareConfig[i].rotX, squareConfig[i].rotY, squareConfig[i].rotZ)));
+        glm::quat q1 = glm::quat(glm::radians(glm::vec3(sealConfig[i].rotX, sealConfig[i].rotY, sealConfig[i].rotZ)));
+
+        glm::quat q = glm::slerp(q0, q1, t);
+
+        glm::mat4 rotationQuat = glm::mat4_cast(q);
+        glm::vec3 translation = glm::mix(squareConfig[i].pos, sealConfig[i].pos, t);
+
+        nodes[i]->transform = glm::translate(glm::mat4(1.0f), translation) * rotationQuat;
+    }
+
+    drawScene();
+}
 
 void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int mods) {
     if (action != GLFW_PRESS) return;
@@ -378,6 +410,22 @@ void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 
         //std::cout << "Projection: " << (activeCam->isOrtho ? "Ortho" : "Perspective") << std::endl;
         break;
+
+    case GLFW_KEY_RIGHT:
+        if (action == GLFW_PRESS) {
+            rightArrowPressed = true;
+        }
+        else if (action == GLFW_RELEASE) {
+            rightArrowPressed = false;
+        }
+
+    case GLFW_KEY_LEFT:
+        if (action == GLFW_PRESS) {
+            leftArrowPressed = true;
+        }
+        else if (action == GLFW_RELEASE) {
+            leftArrowPressed = false;
+        }
 
     default:
         break;
