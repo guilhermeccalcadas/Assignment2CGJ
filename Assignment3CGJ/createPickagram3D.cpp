@@ -31,9 +31,6 @@ private:
 
   // Camera control parameters
   mgl::Camera* Camera = nullptr;
-  bool useOrtho = false;
-  bool useCamera2 = false;
-  float radius = 10.0f;
   const float zoomSpeed = 1.0f;
   const float minRadius = 2.0f;
   const float maxRadius = 50.0f;
@@ -87,10 +84,7 @@ private:
   void drawMesh(mgl::Mesh* m, glm::vec3 pos, float rotX, float rotY, float rotZ, float scal);
   void createSceneGraph();
   static void calculateProjection(CameraInfo& cam, int width, int height);
-
   void updatePieceTransforms(float dt);
-
-
 };
 
 ///////////////////////////////////////////////////////////////////////// MESHES
@@ -165,7 +159,7 @@ TransformationConfiguration sealConfig[7] = {
     { glm::vec3(0.0741f, 1.1920f, 0.0f), 0.0f, 0.0f, 198.0f } //square 5
 };
 
-TransformationConfiguration squareConfig[7] = { //SWITCH THE NAMES LATER
+TransformationConfiguration squareConfig[7] = {
     { glm::vec3(-SIDE / 2 - 0.5f, 0.5f, 0.0f), 90.0f, 0.0f, -90.0f }, //triangle 1
     { glm::vec3(-0.5f, 0.5f, -SIDE / 2), 90.0f, 0.0f, 0.0f }, //triangle 2
     { glm::vec3(-0.5f, 0.5f, SIDE / 4), 90.0f, 0.0f, 0.0f }, //triangle 4
@@ -240,8 +234,6 @@ void MyApp::createSceneGraph() {
 void MyApp::createCamera() {
     Camera = new mgl::Camera(UBO_BP);
 
-    
-    
     // --- SETUP CAM 1 ---
     glm::vec3 eye1(0.0f, 10.0f, 0.0f);
     glm::vec3 up1(0.0f, 0.0f, -1.0f);
@@ -292,7 +284,7 @@ void MyApp::drawScene() {
     root->draw();
 }
 
-
+/////////////////////////////////////////////////////////////////////////// Auxiliary Methods
 
 void MyApp::updateCamera() {
     glm::vec3 initialPos(0.0f, 0.0f, activeCam->radius);
@@ -399,7 +391,7 @@ void MyApp::keyCallback(GLFWwindow* win, int key, int scancode, int action, int 
 }
 
 void MyApp::scrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
-    if (!useOrtho) {
+    if (!activeCam->isOrtho) {
         activeCam->radius -= yoffset * zoomSpeed;
 
         if (activeCam->radius < minRadius) activeCam->radius = minRadius;

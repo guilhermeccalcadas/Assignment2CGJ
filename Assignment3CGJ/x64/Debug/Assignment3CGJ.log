@@ -1,7 +1,7 @@
 ﻿  createPickagram3D.cpp
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(156,20): warning C4305: 'inicializando': truncamento de 'double' para 'float'
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(357,27): warning C4244: 'argumento': conversão de 'double' para 'float', possível perda de dados
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(403,38): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(445,24): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
-C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(446,26): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(150,20): warning C4305: 'inicializando': truncamento de 'double' para 'float'
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(349,27): warning C4244: 'argumento': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(395,38): warning C4244: '-=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(437,24): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
+C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\Assignment3CGJ\createPickagram3D.cpp(438,26): warning C4244: 'inicializando': conversão de 'double' para 'float', possível perda de dados
   Assignment3CGJ.vcxproj -> C:\Users\Guilherme Calçadas\source\repos\Assignment2CGJ\Assignment2CGJ\x64\Debug\Assignment3CGJ.exe

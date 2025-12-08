@@ -51,7 +51,6 @@ namespace mgl {
         ShaderProgram* activeShader = shader_ ? shader_ : inheritedShader;
         bool boundHere = false;
 
-        // Se este nó tem shader próprio ? bind
         if (activeShader && activeShader != inheritedShader) {
             activeShader->bind();
             boundHere = true;
@@ -59,24 +58,19 @@ namespace mgl {
 
         glm::mat4 globalMatrix = parentModel * transform;
 
-        // Uniform da matriz de modelo
         if (activeShader && activeShader->isUniform("ModelMatrix")) {
             GLint loc = activeShader->Uniforms["ModelMatrix"].index;
             glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(globalMatrix));
         }
 
-
-        // Desenhar a peça associada a este nó
         if (piece_) {
             piece_->draw(activeShader);
         }
 
-        // Desenhar os filhos
         for (auto child : children_) {
             child->draw(globalMatrix, activeShader);
         }
 
-        // Desfazer bind se este nó tinha shader próprio
         if (boundHere) {
             activeShader->unbind();
         }

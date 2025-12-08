@@ -26,13 +26,7 @@
     <ClCompile Include="..\libs\mgl\mglSceneNode.cpp" />
     <ClCompile Include="..\libs\mgl\mglShader.cpp" />
     <ClCompile Include="createPickagram3D.cpp" />
-    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="TangramPiece.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Shape.h" />
-    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cube-fs.glsl" />

@@ -32,8 +32,8 @@ namespace mgl {
     private:
         void draw(const glm::mat4& parentModel, ShaderProgram* inheritedShader);
 
-        TangramPiece* piece_;                 // substitui Mesh*
-        ShaderProgram* shader_;               // igual ao original
+        TangramPiece* piece_;
+        ShaderProgram* shader_;
         std::vector<SceneNode*> children_;
     };
 
